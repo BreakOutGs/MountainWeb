@@ -1,0 +1,21 @@
+﻿@page
+@model RegisterConfirmationModel
+@{
+    ViewData["Title"] = "Register confirmation";
+}
+
+<h1>@ViewData["Title"]</h1>
+@{
+    if (@Model.DisplayConfirmAccountLink)
+    {
+<p>
+    Листи на пошту поки не відправляються, увійдіть за цим посиланням <a id="confirm-link" href="@Model.EmailConfirmationUrl">Клікніть сюди для підтвердження профілю</a>
+</p>
+    }
+    else
+    {
+<p>
+       Перевірте пошту на наявність листа.
+</p>
+    }
+}

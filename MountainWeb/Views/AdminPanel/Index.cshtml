@@ -1,0 +1,22 @@
+﻿@model IEnumerable<Microsoft.AspNetCore.Identity.IdentityRole>
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h2>Адмін панель </h2>
+
+    <h4>Списки</h4>
+<ul class="list-unstyled">
+    <li>
+        <a asp-action="ShowRolesList">Список ролей</a>
+    </li>
+    <li>
+        <a asp-action="UserList">Список користувачів</a>
+    </li>
+    <li>
+        <a asp-action="ShowEventLogList">Список подій</a>
+    </li>
+</ul>
+
+
+

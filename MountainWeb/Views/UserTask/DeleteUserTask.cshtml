@@ -1,0 +1,27 @@
+﻿@model MountainWeb.Models.UserTaskViewModels.DeleteUserTaskViewModel
+
+@{
+    ViewData["Title"] = "Delete";
+}
+
+<h1>Видалення завдання</h1>
+
+<h3>Ви впевнены що хочете видалити це завдання?</h3>
+<div>
+    <h4>Aim</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+    </dl>
+    
+    <form asp-action="DeleteUserTask">
+        <input type="hidden" asp-for="Id" />
+        <input type="submit" value="Видалити" class="btn btn-danger" /> |
+        <a asp-action="Index">Назад</a>
+    </form>
+</div>

@@ -1,0 +1,38 @@
+﻿@model IEnumerable<MountainWeb.Models.EventLogViewModels.ShowEventLogViewModel>;
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer localizer
+@using MountainWeb.Data.Entities;
+@{
+    ViewData["Title"] = @localizer["EventLogsView"];
+}
+
+<h2>Events</h2>
+
+<form asp-controller="AdminPanel" asp-action="ShowEventLogList" class="h-75 m-2">
+    <select name="EventType">
+        <option>Всі</option>
+        @foreach(var type in Enum.GetValues(typeof(EventTypes)).Cast<EventTypes>().Select(v => v.ToString()).ToList())
+        {
+            @if (ViewData["EventType"].ToString() == type.ToString())
+            {<option selected>@type</option>}
+            else { <option>@type</option>}
+        }
+    </select>
+    <input name="EventSearchString" type="text" style="width:400px"/>
+    <button type="submit"><i class="fas fa-search"></i>Пошук</button>
+</form>
+
+<div class="p-1 m-2">
+
+
+    @foreach (var eventLog in Model)
+    {
+        <div class="container-fluid border m-2">
+            <div class="list-inline-item">
+                <span class="p-2">@eventLog.Message</span>
+            </div>
+            <div class="list-inline-item">
+                <a asp-action="DeleteEventLog" asp-route-id="@eventLog.Id"><i class="far fa-trash-alt"></i></a>
+            </div>
+        </div>
+    }
+</div>

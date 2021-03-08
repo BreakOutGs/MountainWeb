@@ -1,0 +1,14 @@
+﻿.Mdropdown{
+   
+}
+.Mdropdownbutton {
+    background: none;
+    height: 20px;
+    width: 27px;
+    // border: 1px solid mediumblue;
+}
+.Mactivedrop {
+    visibility: hidden;
+    height:1px;
+    transition: visibility 0s, height 0s linear;
+}

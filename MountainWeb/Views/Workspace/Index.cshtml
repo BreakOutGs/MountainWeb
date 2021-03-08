@@ -1,0 +1,129 @@
+﻿@model MountainWeb.Models.WorkspaceViewModel
+
+<link rel="stylesheet" href="~/Recources/WorkSpaceStyles.css" />
+
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+
+<ul class="list-group-horizontal list-unstyled border ToolsPanel">
+    <li> <a asp-controller="Aim" asp-action="CreateAim">Створити ціль</a></li>
+</ul>
+
+<script type="text/javascript" src="~/lib/jquery/dist/jquery.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $(".Mdropdownbutton").click(function () {
+            if (this.innerHTML.includes("down")) {
+
+                this.innerHTML = "<i class='fas fa-caret-left'></i>";
+            }
+            else {
+
+                this.innerHTML = "<i class='fas fa-caret-down'></i>";
+            }
+            $(this).parent(".Mdropdown").children("ul").toggleClass("Mactivedrop");
+        });
+    });
+</script>
+
+<div class="container ">
+    @foreach (var aim in Model.Aims)
+    {
+        <div class="Mdropdown">
+            <button class="Mdropdownbutton AimPanel AimPanelDropDown">
+                <i class='fas fa-caret-left'></i>
+            </button>
+
+            <div class="container-fluid m-1 AimPanel">
+
+                
+
+                <div class="list-inline-item" style="margin-top:auto; margin-bottom:auto">
+
+                    <div class="PriorityStatus"></div>
+                    
+                    <span>
+                        <i class="fas fa-tasks"></i>
+                        @aim.Completing
+                    </span>
+                    <span class="p-2">@aim.Name</span>
+
+
+                </div>
+                <div class="list-inline-item" style="margin-top:auto; margin-bottom:auto">
+                    <a asp-controller="TaskList" asp-action="CreateTaskList" asp-route-id="@aim.Id"><i class="far fa-plus-square fa-1x"></i></a> |
+                    <a asp-controller="Aim" asp-action="EditAim" asp-route-id="@aim.Id"><i class="far fa-edit"></i></a> |
+                    <a asp-controller="Aim" asp-action="DeleteAim" asp-route-id="@aim.Id"><i class="far fa-trash-alt"></i></a>
+                </div>
+            </div>
+            <ul class="list-group-horizontal list-unstyled ml-2 Mactivedrop">
+                @foreach (var tasklist in aim.TaskLists)
+                {
+                <li class="ListContainer Mdropdown ">
+                    <button class="Mdropdownbutton ListPanelDropDown ListPanel">
+                        <i class='fas fa-caret-left'></i>
+                    </button>
+                    <div class="container-fluid m-1 ListPanel" >
+
+                        <div class="list-inline-item">
+                            <i class="fas fa-tasks"></i>
+                            @tasklist.Completing
+                            <span class="p-2">@tasklist.Name</span>
+
+                        </div>
+                        <div class="list-inline-item">
+                            <a asp-controller="UserTask" asp-action="CreateUserTask" asp-route-id="@tasklist.Id"><i class="far fa-plus-square"></i></a> |
+                            <a asp-controller="TaskList" asp-action="EditTaskList" asp-route-id="@tasklist.Id"><i class="far fa-edit"></i></a> |
+                            <a asp-controller="TaskList" asp-action="DeleteTaskList" asp-route-id="@tasklist.Id"><i class="far fa-trash-alt"></i></a>
+                        </div>
+
+                    </div>
+
+                    <ul class="list-group-horizontal list-unstyled m-2 Mactivedrop">
+                        @foreach (var task in tasklist.UserTasks)
+                        {
+                            <li class="m-1 pl-1 TaskContainer">
+                                @if (task.IsCompleted)
+                                {
+                                    <div class=" border TaskPanel" style="padding-left: 5px; padding-right: 3px; background-color:#e3e3e3 ">
+                                        <input type="checkbox" asp-action="ChangeUseTaskCompleted" checked="@task.IsCompleted" asp-route-id="@task.Id" disabled="disabled" />
+                                        @task.Name
+
+                                        <div>
+                                            <a asp-controller="UserTask" asp-action="EditUserTask" asp-route-id="@task.Id"><i class="far fa-edit"></i></a> |
+                                            <a asp-controller="UserTask" asp-action="DeleteUserTask" asp-route-id="@task.Id"><i class="far fa-trash-alt mr-1"></i></a>
+                                        </div>
+                                    </div>
+                                }
+                                else
+                                {
+
+                                    <div class=" border TaskPanel" style="padding-left: 5px; padding-right: 3px;">
+                                        <input type="checkbox" asp-action="ChangeUseTaskCompleted" checked="@task.IsCompleted" asp-route-id="@task.Id" disabled="disabled" />
+                                        @task.Name
+
+                                        <div>
+                                            <a asp-controller="UserTask" asp-action="EditUserTask" asp-route-id="@task.Id"><i class="far fa-edit"></i></a> |
+                                            <a asp-controller="UserTask" asp-action="DeleteUserTask" asp-route-id="@task.Id"><i class="far fa-trash-alt mr-1"></i></a>
+                                        </div>
+                                    </div>
+                                }
+
+
+                            </li>
+                        }
+                    </ul>
+                </li>
+                }
+
+            </ul>
+
+        </div>
+    }
+</div>
+
+
+

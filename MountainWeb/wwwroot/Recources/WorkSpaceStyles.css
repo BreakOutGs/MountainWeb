@@ -1,0 +1,51 @@
+﻿.AimPanel {
+    border: 3px solid #8d8d8d57;
+    display: inline !important;
+}
+.AimPanelDropDown {
+    display: inline;
+    height: 28px;
+    padding-right: 6px;
+    padding-top: 0px;
+    padding-bottom: 0px;
+    padding-left: 6px;
+}
+.ListPanel {
+    border: 3px solid #8d8d8d57;
+    display: inline !important;
+}
+
+.ListPanelDropDown {
+    display: inline-block;
+    height: 23px;
+    padding-right: 6px;
+    padding-top: 0px;
+    padding-bottom: 23px;
+    padding-left: 6px;
+    width: 29px;
+}
+.ListContainer {
+    margin-top: 10px;
+    margin-left: 30px;
+}
+
+.PriorityStatus {
+    background: linear-gradient( 138deg, #d7601d, #ffc107);
+    width: 13px;
+    height: 13px;
+    border-radius: 3px;
+    display: inline-block;
+    margin-right: 5px;
+    margin-bottom: 0px;
+}
+.TaskPanel {
+    display: inline-block;
+    margin-left: 20px;
+}
+.TaskPanel > div{
+    display: inherit;
+}
+
+.ToolsPanel{
+    padding: 8px;
+}
