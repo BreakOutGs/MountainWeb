@@ -20,7 +20,6 @@ namespace MountainWeb.Data
         public DbSet<MountainWeb.Data.Entities.Aim> Aim { get; set; }
         public DbSet<MountainWeb.Data.Entities.TaskList> TaskList  { get; set; }
         public DbSet<MountainWeb.Data.Entities.UserTask> UserTask { get; set; }
-       // public DbSet<MountainWeb.Models.UserTaskViewModels.EditUserTaskViewModel> EditUserTaskViewModel { get; set; }
         public DbSet<MountainWeb.Data.Entities.EventLog> eventLogs { get; set; }
         
     }

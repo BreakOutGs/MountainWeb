@@ -14,7 +14,8 @@ namespace MountainWeb.Models.UserTaskViewModels
 
         public string Description { get; set; }
 
-
+        [Range(0, 100)]
+        public int Priority { get; set; }
 
     }
 }

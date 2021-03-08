@@ -53,6 +53,7 @@ namespace MountainWeb
             });
             services.AddLocalization(ept => ept.ResourcesPath = "LocaleResources");
             services.AddMvc().AddViewLocalization(Microsoft.AspNetCore.Mvc.Razor.LanguageViewLocationExpanderFormat.Suffix).AddDataAnnotationsLocalization();
+           
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -12,8 +12,7 @@ namespace MountainWeb.Models.TaskListViewModels
         public string Name { get; set; }
 
         public string Description { get; set; }
-
-        
+       
 
     }
 }

@@ -16,7 +16,8 @@ namespace MountainWeb.Data.Entities
         public string Description { get; set; }
         public bool IsCompleted{ get; set; }
 
-
+        [Range(0,100)]
+        public int  Priority{ get; set; }
 
 
         public int TaskListId { get; set; }

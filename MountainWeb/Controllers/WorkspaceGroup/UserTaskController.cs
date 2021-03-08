@@ -54,6 +54,7 @@ namespace MountainWeb.Controllers.WorkspaceGroup
                 UserTask userTask = new UserTask()
                 {
                     Name = createViewModel.Name,
+                    Priority = createViewModel.Priority,
                     Description = createViewModel.Description,
                     TaskListId = list.Id,
                     TaskList = list
@@ -88,6 +89,7 @@ namespace MountainWeb.Controllers.WorkspaceGroup
             EditUserTaskViewModel editViewModel = new EditUserTaskViewModel()
             {
                 Id = userTask.Id,
+                Priority = userTask.Priority,
                 Name = userTask.Name,
                 Description = userTask.Description,
                 IsCompleted = userTask.IsCompleted
@@ -118,6 +120,7 @@ namespace MountainWeb.Controllers.WorkspaceGroup
                 var userTask = await _context.UserTask.SingleAsync(e => e.Id == editModel.Id);
                 {//changing aimModel props by new values from modelview
                     userTask.Name = editModel.Name;
+                    userTask.Priority = editModel.Priority;
                     userTask.Description = editModel.Description;
                     userTask.IsCompleted = editModel.IsCompleted;
                 }
@@ -172,6 +175,7 @@ namespace MountainWeb.Controllers.WorkspaceGroup
             var deleteViewModel = new DeleteUserTaskViewModel()
             {
                 Name = userTask.Name,
+                Priority = userTask.Priority,
                 Id = userTask.Id
             };
 
