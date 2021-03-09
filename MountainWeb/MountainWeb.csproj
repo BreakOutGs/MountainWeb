@@ -6,6 +6,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="wwwroot\Recources\NewFolder\**" />
+    <Content Remove="wwwroot\Recources\NewFolder\**" />
+    <EmbeddedResource Remove="wwwroot\Recources\NewFolder\**" />
+    <None Remove="wwwroot\Recources\NewFolder\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Remove="Data\Migrations\20210129083407_addToModelsToDatabase.cs" />
     <Compile Remove="Data\Migrations\20210129083407_addToModelsToDatabase.Designer.cs" />
   </ItemGroup>
@@ -39,6 +46,7 @@
 
   <ItemGroup>
     <Folder Include="LocaleResources\Views\" />
+    <Folder Include="wwwroot\Recources\Styles\" />
   </ItemGroup>
 
   <ProjectExtensions><VisualStudio><UserProperties libman_1json__JsonSchema="https://json.schemastore.org/bower" /></VisualStudio></ProjectExtensions>
