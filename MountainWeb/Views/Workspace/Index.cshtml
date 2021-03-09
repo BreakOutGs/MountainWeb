@@ -1,4 +1,5 @@
 ﻿@model MountainWeb.Models.WorkspaceViewModel
+@using MountainWeb.Models
 
 <link rel="stylesheet" href="~/Recources/WorkSpaceStyles.css" />
 
@@ -86,33 +87,18 @@
                         @foreach (var task in tasklist.UserTasks)
                         {
                             <li class="m-1 pl-1 TaskContainer">
-                                @if (task.IsCompleted)
-                                {
-                                <div class=" border TaskPanel" style="padding-left: 5px; padding-right: 3px; background-color:#e3e3e3 ">
-                                    <input type="checkbox" asp-action="ChangeUseTaskCompleted" checked="@task.IsCompleted" asp-route-id="@task.Id" disabled="disabled" />
-                                    <div class="PriorityStatus" style="        background: linear-gradient(138deg,rgba(215, 96, 29, @task.Priority.ToString().Replace(",",".")),rgba(255, 193, 7,  @task.Priority.ToString().Replace(",",".")))"></div>
+                               
+                                <div class=" border TaskPanel" style="padding-left: 5px; padding-right: 3px; background-color:@UserTaskColorsHelper.GetTaskPanelBackGroundColor(task.IsCompleted)">
+                                        <input type="checkbox" asp-action="ChangeUseTaskCompleted" checked="@task.IsCompleted" asp-route-id="@task.Id" disabled="disabled" />
+                                    <span style="display:inline; margin-left:5px    ">@task.Priority</span>
+                                    <div class="PriorityStatus" style="background: linear-gradient(138deg,@UserTaskColorsHelper.GetColorByPriority(task.Priority), @UserTaskColorsHelper.GetColorByPriority(task.Priority))"></div>
                                     @task.Name
 
                                     <div>
                                         <a asp-controller="UserTask" asp-action="EditUserTask" asp-route-id="@task.Id"><i class="far fa-edit"></i></a> |
                                         <a asp-controller="UserTask" asp-action="DeleteUserTask" asp-route-id="@task.Id"><i class="far fa-trash-alt mr-1"></i></a>
                                     </div>
-                                </div>
-                                }
-                                else
-                                {
-
-                            <div class=" border TaskPanel" style="padding-left: 5px; padding-right: 3px;">
-                                <input type="checkbox" asp-action="ChangeUseTaskCompleted" checked="@task.IsCompleted" asp-route-id="@task.Id" disabled="disabled" />
-                                <div class="PriorityStatus" style="        background: linear-gradient(138deg,rgba(215, 96, 29, @task.Priority.ToString().Replace(",",".")),rgba(255, 193, 7,  @task.Priority.ToString().Replace(",",".")))"></div>
-                                @task.Name
-
-                                <div>
-                                    <a asp-controller="UserTask" asp-action="EditUserTask" asp-route-id="@task.Id"><i class="far fa-edit"></i></a> |
-                                    <a asp-controller="UserTask" asp-action="DeleteUserTask" asp-route-id="@task.Id"><i class="far fa-trash-alt mr-1"></i></a>
-                                </div>
-                            </div>
-                                }
+                                </div>                                
 
 
                             </li>

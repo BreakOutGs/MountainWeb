@@ -17,7 +17,7 @@ namespace MountainWeb.Models
         }
     }
 
-    public class PriorityColors
+    public class UserTaskColorsHelper
     {
       static   ColorRGBA[] colors = {
             new ColorRGBA(227,209,234,1),
@@ -31,8 +31,19 @@ namespace MountainWeb.Models
         public static string GetColorByPriority(int Priority)
         {
             double priorityPoint = 100 / colors.Length;
-            ColorRGBA color = colors[Convert.ToInt32(Priority / priorityPoint)-1];
+            int colorNumber = Convert.ToInt32(Priority / priorityPoint) - 1;
+            if (colorNumber < 0 || colorNumber > (colors.Length - 1)) colorNumber = 0;
+            ColorRGBA color = colors[colorNumber];
             return "rgba(" +color.r+", "+color.g+", "+color.b+", "+color.a+")";
+        }
+        public static string GetTaskPanelBackGroundColor(bool isCompleted)
+        {
+            string colorToReturn = "#ffffff";
+            if (isCompleted)
+            {
+                colorToReturn = "#e3e3e3";
+            }
+            return colorToReturn;
         }
 
 

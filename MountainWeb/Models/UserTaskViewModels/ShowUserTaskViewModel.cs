@@ -12,13 +12,13 @@ namespace MountainWeb.Models.UserTaskViewModels
             public readonly int Id;
             public string Name { get; set; }
             public bool IsCompleted { get; set; }
-        [Range(0, 1)]
-        public double Priority { get; set; }
+        [Range(0, 100)]
+        public int Priority { get; set; }
 
         public ShowUserTaskViewModel(UserTask userTask)
             {
                 this.Id = userTask.Id;
-                this.Priority = userTask.Priority/100.0;
+                this.Priority = userTask.Priority;
                 this.Name = userTask.Name;
                 this.IsCompleted = userTask.IsCompleted;
             }
