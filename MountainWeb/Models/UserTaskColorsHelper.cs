@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace MountainWeb.Models
 {
-    struct ColorRGBA
+   public struct ColorRGBA
     {
         public int r;
         public int g;
@@ -44,6 +44,10 @@ namespace MountainWeb.Models
                 colorToReturn = "#e3e3e3";
             }
             return colorToReturn;
+        }
+        public static ColorRGBA[] GetColors()
+        {
+            return colors;
         }
 
 

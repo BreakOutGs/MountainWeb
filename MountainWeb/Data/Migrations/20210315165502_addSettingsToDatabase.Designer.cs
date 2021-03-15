@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MountainWeb.Data;
 
 namespace MountainWeb.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210315165502_addSettingsToDatabase")]
+    partial class addSettingsToDatabase
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -189,8 +191,7 @@ namespace MountainWeb.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AimId")
-                        .IsUnique();
+                    b.HasIndex("AimId");
 
                     b.ToTable("aimSettings");
                 });
@@ -317,8 +318,7 @@ namespace MountainWeb.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("TaskListId")
-                        .IsUnique();
+                    b.HasIndex("TaskListId");
 
                     b.ToTable("taskListSettings");
                 });
@@ -365,8 +365,7 @@ namespace MountainWeb.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserTaskId")
-                        .IsUnique();
+                    b.HasIndex("UserTaskId");
 
                     b.ToTable("userTaskSettings");
                 });
@@ -432,8 +431,8 @@ namespace MountainWeb.Data.Migrations
             modelBuilder.Entity("MountainWeb.Data.Entities.AimSettings", b =>
                 {
                     b.HasOne("MountainWeb.Data.Entities.Aim", "Aim")
-                        .WithOne("Settings")
-                        .HasForeignKey("MountainWeb.Data.Entities.AimSettings", "AimId")
+                        .WithMany()
+                        .HasForeignKey("AimId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -450,8 +449,8 @@ namespace MountainWeb.Data.Migrations
             modelBuilder.Entity("MountainWeb.Data.Entities.TaskListSettings", b =>
                 {
                     b.HasOne("MountainWeb.Data.Entities.TaskList", "TaskList")
-                        .WithOne("Settings")
-                        .HasForeignKey("MountainWeb.Data.Entities.TaskListSettings", "TaskListId")
+                        .WithMany()
+                        .HasForeignKey("TaskListId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -468,8 +467,8 @@ namespace MountainWeb.Data.Migrations
             modelBuilder.Entity("MountainWeb.Data.Entities.UserTaskSettings", b =>
                 {
                     b.HasOne("MountainWeb.Data.Entities.UserTask", "UserTask")
-                        .WithOne("Settings")
-                        .HasForeignKey("MountainWeb.Data.Entities.UserTaskSettings", "UserTaskId")
+                        .WithMany()
+                        .HasForeignKey("UserTaskId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

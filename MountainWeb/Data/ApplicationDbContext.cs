@@ -18,9 +18,17 @@ namespace MountainWeb.Data
 
        
         public DbSet<MountainWeb.Data.Entities.Aim> Aim { get; set; }
+        public DbSet<MountainWeb.Data.Entities.AimSettings> aimSettings { get; set; }
+
         public DbSet<MountainWeb.Data.Entities.TaskList> TaskList  { get; set; }
+        public DbSet<MountainWeb.Data.Entities.TaskListSettings> taskListSettings { get; set; }
+
         public DbSet<MountainWeb.Data.Entities.UserTask> UserTask { get; set; }
+        public DbSet<MountainWeb.Data.Entities.UserTaskSettings> userTaskSettings { get; set; }
+
         public DbSet<MountainWeb.Data.Entities.EventLog> eventLogs { get; set; }
+
+
         
     }
 }

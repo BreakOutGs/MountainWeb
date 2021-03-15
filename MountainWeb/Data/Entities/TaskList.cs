@@ -19,6 +19,8 @@ namespace MountainWeb.Data.Entities
         public string Description { get; set; }
         public virtual ICollection<UserTask> UserTasks { get; set; }
 
+        public TaskListSettings Settings { get; set; }
+
         public int AimId { get; set; }
 
         public Aim Aim { get; set; }

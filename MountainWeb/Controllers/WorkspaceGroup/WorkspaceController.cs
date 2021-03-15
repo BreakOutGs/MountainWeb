@@ -27,12 +27,84 @@ namespace MountainWeb.Controllers
         }
 
         // GET: Workspace
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string SortBy, string SearchText, string UpDown )
         {
             WorkspaceViewModel viewModel;
             var user = await _userManager.GetUserAsync(HttpContext.User);
             var aims = _context.Aim.Include(aim => aim.TaskLists).ThenInclude(e => e.UserTasks).Where(aim => aim.ApplicationUserId == user.Id).ToList();
+            if(SearchText!=""&&SearchText!=" " && SearchText != null)
+            {
+                var _aims = new List<Aim>();
+                bool _AimWithText;
+                foreach(var aim in aims)
+                {
+                    _AimWithText = false;
+                    if(aim.Name.Contains(SearchText))
+                    {
+                        _AimWithText = true;
+                        
+                    }
+                    else
+                    {
+                        foreach(TaskList list in aim.TaskLists)
+                        {
+                            if(list.Name.Contains(SearchText))
+                            {
+                                _AimWithText = true;
+                                break;
+                            }
+                            else 
+                                foreach(UserTask task in list.UserTasks)
+                                {
+                                    if (task.Name.Contains(SearchText)) 
+                                    {
+                                        _AimWithText = true;
+                                        break;
+                                    }
+                                }
+                        }
+                    }
+                    if (_AimWithText) _aims.Add(aim);
+                }
+                aims = _aims;
+            }
             viewModel = new WorkspaceViewModel(aims);
+            if (SortBy!=null&SortBy!="Без сортування" && SortBy != "Сортування")
+            {
+                switch (SortBy)
+                {
+                    case "Назва цілі":
+                        if (UpDown == "Up")
+                        {
+                            viewModel.Aims = viewModel.Aims.OrderBy(a => a.Name).ToList();
+                        }
+                        else if (UpDown == "Down")
+                        {
+                            viewModel.Aims = viewModel.Aims.OrderByDescending(a => a.Name).ToList();
+                        }
+                            break;
+                    case "Сумарний пріоритет":
+                        if (UpDown == "Up")
+                        {
+                            viewModel.Aims = viewModel.Aims.OrderBy(a => a.SummaryPriority).ToList();
+                        }
+                        else if (UpDown == "Down")
+                        {
+                            viewModel.Aims = viewModel.Aims.OrderByDescending(a => a.SummaryPriority).ToList();
+                        }
+                        break;
+                    case "Середній пріоритет":
+                        if (UpDown == "Up")
+                        {
+                            viewModel.Aims = viewModel.Aims.OrderBy(a => a.AveragePriority).ToList();
+                        }
+                        else if (UpDown == "Down")
+                        {
+                            viewModel.Aims = viewModel.Aims.OrderByDescending(a => a.AveragePriority).ToList();
+                        }
+                        break;
+                }
+            }
             return View(viewModel);
         }
 

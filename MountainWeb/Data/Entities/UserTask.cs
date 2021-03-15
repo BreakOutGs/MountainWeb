@@ -19,6 +19,8 @@ namespace MountainWeb.Data.Entities
         [Range(0,100)]
         public int  Priority{ get; set; }
 
+        public UserTaskSettings Settings { get; set; }
+
 
         public int TaskListId { get; set; }
 

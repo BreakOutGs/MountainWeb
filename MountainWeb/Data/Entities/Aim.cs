@@ -21,7 +21,7 @@ namespace MountainWeb.Data.Entities
 
         public ApplicationUser User { get; set; }
 
-
+        public AimSettings Settings { get; set; }
 
         public Aim() {
             TaskLists = new List<TaskList>();
