@@ -192,8 +192,31 @@ namespace MountainWeb.Controllers.WorkspaceGroup
         {
             return _context.Aim.Any(e => e.Id == id);
         }
-        
+        public async void ChangeAimExpand(int id, bool IsExpanded)
+        {
 
+            var aimSettings = AimSettingsIsExistOrCreate(id);
+            aimSettings.Expanded = IsExpanded;
+            _context.Update(aimSettings);
+            await _context.SaveChangesAsync();
+        }
+        public AimSettings AimSettingsIsExistOrCreate(int aimId)
+        {
+            if (!_context.aimSettings.Any(s => s.AimId == aimId))
+            {
+                AimSettings aimSettings = new AimSettings()
+                {
+                    AimId = aimId,
+                    Expanded = false,
+                    Aim = _context.Aim.First(s => s.Id == aimId)
+
+                };
+                _context.aimSettings.Add(aimSettings);
+                _context.SaveChanges();
+                return aimSettings;
+            }
+            else return _context.aimSettings.First(s => s.AimId == aimId);
+        }
 
     }
 }

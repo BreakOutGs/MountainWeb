@@ -31,7 +31,10 @@ namespace MountainWeb.Controllers
         {
             WorkspaceViewModel viewModel;
             var user = await _userManager.GetUserAsync(HttpContext.User);
-            var aims = _context.Aim.Include(aim => aim.TaskLists).ThenInclude(e => e.UserTasks).Where(aim => aim.ApplicationUserId == user.Id).ToList();
+            var aims = _context.Aim.Include(aim => aim.Settings)
+                .Include(aim => aim.TaskLists).ThenInclude(e => e.UserTasks)
+                .Include(aims => aims.TaskLists).ThenInclude(l => l.Settings)
+                .Where(aim => aim.ApplicationUserId == user.Id).ToList();
             if(SearchText!=""&&SearchText!=" " && SearchText != null)
             {
                 var _aims = new List<Aim>();
@@ -126,10 +129,26 @@ namespace MountainWeb.Controllers
             return View(aim);
         }
 
-       
+       [HttpPost]
+       public async Task<bool>  ChangeExpand(int ItemId, string ItemType, bool Expanded)
+       {
+            switch (ItemType)
+            {
+                case "Aim":
+                    Url.Action("ChangeAimExpand", "Aim", new { id = ItemId, IsExpanded = Expanded });
+                    break;
+                case "TaskList":
+                    Url.Action("ChangeTaskListExpand", "TaskList", new { id = ItemId, IsExpanded = Expanded });
+                    break;
+                default: return false;
+                   
+            } 
+            return true;
+       }
 
 
-       
-       
+
+
+
     }
 }

@@ -20,6 +20,7 @@ namespace MountainWeb.Models.TaskListViewModels
             public string Completing {  get; private set; }
 
             public ICollection<ShowUserTaskViewModel> UserTasks { get; set; }
+            public TaskListSettings Settings { get; set; }
             public ShowTaskListViewModel()
             {
                 UserTasks = new List<ShowUserTaskViewModel>();
@@ -27,21 +28,22 @@ namespace MountainWeb.Models.TaskListViewModels
 
             public ShowTaskListViewModel(TaskList list)
             {
-                taskCompleted = 0;
+                this.taskCompleted = 0;
                 this.Id = list.Id;
                 this.Name = list.Name;
-                SummaryPriority = 0;
-                AveragePriority = 0;
+                this.SummaryPriority = 0;
+                this.AveragePriority = 0;
+                this.Settings = list.Settings;
                 UserTasks = new List<ShowUserTaskViewModel>();
                 foreach (var task in list.UserTasks)
                 {
-                   SummaryPriority += task.Priority;
-                    UserTasks.Add(new ShowUserTaskViewModel(task));
-                   if (task.IsCompleted) taskCompleted++;
+                    this.SummaryPriority += task.Priority;
+                    this.UserTasks.Add(new ShowUserTaskViewModel(task));
+                   if (task.IsCompleted) this.taskCompleted++;
                 }
                 if(UserTasks.Count!=0)
-                AveragePriority = SummaryPriority / UserTasks.Count;
-                Completing = taskCompleted + "/" + UserTasks.Count;
+                this.AveragePriority = SummaryPriority / UserTasks.Count;
+                this.Completing = taskCompleted + "/" + UserTasks.Count;
             }
             public int getCompletingPercent()
             {

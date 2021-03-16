@@ -15,31 +15,18 @@
             if (this.innerHTML.includes("down")) {
 
                 this.innerHTML = "<i class='fas fa-caret-left'></i>";
+                 isExpanded = true;
             }
             else {
-
                 this.innerHTML = "<i class='fas fa-caret-down'></i>";
+                 isExpanded = false;
             }
             $(this).parent(".Mdropdown").children("ul").toggleClass("Mactivedrop");
-        });
-    });
-    $(document).ready(function () {
-        $("#UpDownButton").click(function () {
 
-            if (this.innerHTML.includes("up-alt")) {
-                this.innerHTML = "<i class='fas fa-sort-amount-down-alt' style='margin-left:4px'></i>";
-                $(this).parent(document).children("#UpDownValue").val("Down");
-                var isExpanded = true;
-            }
-            else {
-                this.innerHTML = "<i class='fas fa-sort-amount-up-alt' style='margin-left:4px'></i>";
-                $(this).parent(document).children("#UpDownValue").val("Up");
-                var isExpanded = false;
-            }
-            var _position = this.id.indexOf("_") + 1;
-            var _itemType = this.id.substr(0, _position - 1);
-            var _itemId = this.id.substr(_position, aimId.length-_position);
-           
+             _position = this.id.indexOf("_") + 1;
+             _itemType = this.id.substr(0, _position - 1);
+             _itemId = this.id.substr(_position, this.id.length-_position);
+
                  $.ajax({
             type: "POST",
                      url: "@Url.Action("ChangeExpand","Workspace")",
@@ -53,7 +40,23 @@
             }
         });
         })
-    })
+    });
+    $(document).ready(function () {
+        $("#UpDownButton").click(function () {
+
+            if (this.innerHTML.includes("up-alt")) {
+                this.innerHTML = "<i class='fas fa-sort-amount-down-alt' style='margin-left:4px'></i>";
+                $(this).parent(document).children("#UpDownValue").val("Down");
+
+            }
+            else {
+                this.innerHTML = "<i class='fas fa-sort-amount-up-alt' style='margin-left:4px'></i>";
+                $(this).parent(document).children("#UpDownValue").val("Up");
+
+            }
+
+        })
+    });
 </script>
 <ul class="list-group-horizontal list-unstyled border ToolsPanel">
     <li> <a asp-controller="Aim" asp-action="CreateAim">Створити ціль</a></li>
@@ -84,39 +87,58 @@
 <div class="container ">
     @foreach (var aim in Model.Aims)
     {
-        <div class="Mdropdown">
-            <button class="Mdropdownbutton AimPanel AimPanelDropDown">
-                <i class='fas fa-caret-left' ></i>
-            </button>
+       
+    <div class="Mdropdown">
+        <button class="Mdropdownbutton AimPanel AimPanelDropDown" id="Aim_@aim.Id">
+            @if (aim.Settings.Expanded)
+            {
+                <i class="fas fa-caret-down"></i>
+            }
+            else
+            {
+                <i class='fas fa-caret-left'></i>
+            }
 
-            <div class="container-fluid m-1 AimPanel">
+        </button>
 
-
-
-                <div class="list-inline-item" style="margin-top:auto; margin-bottom:auto">
-
-                    <div class="PriorityStatus"></div>
-
-                    <span>
-                        <i class="fas fa-tasks"></i>
-                        @aim.Completing
-                    </span>
-                    <span class="p-2">@aim.Name</span>
+        <div class="container-fluid m-1 AimPanel">
 
 
-                </div>
-                <div class="list-inline-item" style="margin-top:auto; margin-bottom:auto">
-                    <a asp-controller="TaskList" asp-action="CreateTaskList" asp-route-id="@aim.Id"><i class="far fa-plus-square fa-1x"></i></a> |
-                    <a asp-controller="Aim" asp-action="EditAim" asp-route-id="@aim.Id"><i class="far fa-edit"></i></a> |
-                    <a asp-controller="Aim" asp-action="DeleteAim" asp-route-id="@aim.Id"><i class="far fa-trash-alt"></i></a>
-                </div>
+
+            <div class="list-inline-item" style="margin-top:auto; margin-bottom:auto">
+
+                <div class="PriorityStatus"></div>
+
+                <span>
+                    <i class="fas fa-tasks"></i>
+                    @aim.Completing
+                </span>
+                <span class="p-2">@aim.Name</span>
+
+
             </div>
+            <div class="list-inline-item" style="margin-top:auto; margin-bottom:auto">
+                <a asp-controller="TaskList" asp-action="CreateTaskList" asp-route-id="@aim.Id"><i class="far fa-plus-square fa-1x"></i></a> |
+                <a asp-controller="Aim" asp-action="EditAim" asp-route-id="@aim.Id"><i class="far fa-edit"></i></a> |
+                <a asp-controller="Aim" asp-action="DeleteAim" asp-route-id="@aim.Id"><i class="far fa-trash-alt"></i></a>
+            </div>
+        </div>
+
+        @if (aim.Settings.Expanded)
+        {
             <ul class="list-group-horizontal list-unstyled ml-2 Mactivedrop">
                 @foreach (var tasklist in aim.TaskLists)
                 {
                     <li class="ListContainer Mdropdown ">
-                        <button class="Mdropdownbutton ListPanelDropDown ListPanel">
-                            <i class='fas fa-caret-left'></i>
+                        <button class="Mdropdownbutton ListPanelDropDown ListPanel" id="TaskList_@tasklist.Id">
+                            @if (aim.Settings.Expanded)
+                            {
+                                <i class="fas fa-caret-down"></i>
+                            }
+                            else
+                            {
+                                <i class='fas fa-caret-left'></i>
+                            }
                         </button>
                         <div class="container-fluid m-1 ListPanel">
 
@@ -133,34 +155,154 @@
                             </div>
 
                         </div>
+                        @if (tasklist.Settings.Expanded)
+                        {
+                            <ul class="list-group-horizontal list-unstyled m-2 Mactivedrop">
 
-                        <ul class="list-group-horizontal list-unstyled m-2 Mactivedrop">
-                            @foreach (var task in tasklist.UserTasks)
-                            {
-                                <li class="m-1 pl-1 TaskContainer">
+                                @foreach (var task in tasklist.UserTasks)
+                                {
+                                    <li class="m-1 pl-1 TaskContainer">
 
-                                    <div class=" border TaskPanel" style="padding-left: 5px; padding-right: 3px; background-color:@UserTaskColorsHelper.GetTaskPanelBackGroundColor(task.IsCompleted)">
-                                        <input type="checkbox" asp-action="ChangeUseTaskCompleted" checked="@task.IsCompleted" asp-route-id="@task.Id" disabled="disabled" />
-                                        <span style="display:inline; margin-left:5px    ">@task.Priority</span>
-                                        <div class="PriorityStatus" style="background: linear-gradient(138deg,@UserTaskColorsHelper.GetColorByPriority(task.Priority), @UserTaskColorsHelper.GetColorByPriority(task.Priority))"></div>
-                                        @task.Name
+                                        <div class=" border TaskPanel" style="padding-left: 5px; padding-right: 3px; background-color:@UserTaskColorsHelper.GetTaskPanelBackGroundColor(task.IsCompleted)">
+                                            <input type="checkbox" asp-action="ChangeUseTaskCompleted" checked="@task.IsCompleted" asp-route-id="@task.Id" disabled="disabled" />
+                                            <span style="display:inline; margin-left:5px    ">@task.Priority</span>
+                                            <div class="PriorityStatus" style="background: linear-gradient(138deg,@UserTaskColorsHelper.GetColorByPriority(task.Priority), @UserTaskColorsHelper.GetColorByPriority(task.Priority))"></div>
+                                            @task.Name
 
-                                        <div>
-                                            <a asp-controller="UserTask" asp-action="EditUserTask" asp-route-id="@task.Id"><i class="far fa-edit"></i></a> |
-                                            <a asp-controller="UserTask" asp-action="DeleteUserTask" asp-route-id="@task.Id"><i class="far fa-trash-alt mr-1"></i></a>
+                                            <div>
+                                                <a asp-controller="UserTask" asp-action="EditUserTask" asp-route-id="@task.Id"><i class="far fa-edit"></i></a> |
+                                                <a asp-controller="UserTask" asp-action="DeleteUserTask" asp-route-id="@task.Id"><i class="far fa-trash-alt mr-1"></i></a>
+                                            </div>
                                         </div>
-                                    </div>
 
 
-                                </li>
-                            }
-                        </ul>
+                                    </li>
+                                }
+                            </ul>
+                        }
+                        else
+                        {
+                            <ul class="list-group-horizontal list-unstyled m-2 ">
+
+                                @foreach (var task in tasklist.UserTasks)
+                                {
+                                    <li class="m-1 pl-1 TaskContainer">
+
+                                        <div class=" border TaskPanel" style="padding-left: 5px; padding-right: 3px; background-color:@UserTaskColorsHelper.GetTaskPanelBackGroundColor(task.IsCompleted)">
+                                            <input type="checkbox" asp-action="ChangeUseTaskCompleted" checked="@task.IsCompleted" asp-route-id="@task.Id" disabled="disabled" />
+                                            <span style="display:inline; margin-left:5px    ">@task.Priority</span>
+                                            <div class="PriorityStatus" style="background: linear-gradient(138deg,@UserTaskColorsHelper.GetColorByPriority(task.Priority), @UserTaskColorsHelper.GetColorByPriority(task.Priority))"></div>
+                                            @task.Name
+
+                                            <div>
+                                                <a asp-controller="UserTask" asp-action="EditUserTask" asp-route-id="@task.Id"><i class="far fa-edit"></i></a> |
+                                                <a asp-controller="UserTask" asp-action="DeleteUserTask" asp-route-id="@task.Id"><i class="far fa-trash-alt mr-1"></i></a>
+                                            </div>
+                                        </div>
+
+
+                                    </li>
+                                }
+                            </ul>
+
+                        }
+
                     </li>
                 }
 
             </ul>
+        }
+        else
+        {
+            <ul class="list-group-horizontal list-unstyled ml-2">
+                @foreach (var tasklist in aim.TaskLists)
+                {
+                    <li class="ListContainer Mdropdown ">
+                        <button class="Mdropdownbutton ListPanelDropDown ListPanel" id="TaskList_@tasklist.Id">
+                            @if (aim.Settings.Expanded)
+                            {
+                                <i class="fas fa-caret-down"></i>
+                            }
+                            else
+                            {
+                                <i class='fas fa-caret-left'></i>
+                            }
+                        </button>
+                        <div class="container-fluid m-1 ListPanel">
 
-        </div>
+                            <div class="list-inline-item">
+                                <i class="fas fa-tasks"></i>
+                                @tasklist.Completing
+                                <span class="p-2">@tasklist.Name</span>
+
+                            </div>
+                            <div class="list-inline-item">
+                                <a asp-controller="UserTask" asp-action="CreateUserTask" asp-route-id="@tasklist.Id"><i class="far fa-plus-square"></i></a> |
+                                <a asp-controller="TaskList" asp-action="EditTaskList" asp-route-id="@tasklist.Id"><i class="far fa-edit"></i></a> |
+                                <a asp-controller="TaskList" asp-action="DeleteTaskList" asp-route-id="@tasklist.Id"><i class="far fa-trash-alt"></i></a>
+                            </div>
+
+                        </div>
+                        @if (tasklist.Settings.Expanded)
+                        {
+                            <ul class="list-group-horizontal list-unstyled m-2 Mactivedrop">
+
+                                @foreach (var task in tasklist.UserTasks)
+                                {
+                                    <li class="m-1 pl-1 TaskContainer">
+
+                                        <div class=" border TaskPanel" style="padding-left: 5px; padding-right: 3px; background-color:@UserTaskColorsHelper.GetTaskPanelBackGroundColor(task.IsCompleted)">
+                                            <input type="checkbox" asp-action="ChangeUseTaskCompleted" checked="@task.IsCompleted" asp-route-id="@task.Id" disabled="disabled" />
+                                            <span style="display:inline; margin-left:5px    ">@task.Priority</span>
+                                            <div class="PriorityStatus" style="background: linear-gradient(138deg,@UserTaskColorsHelper.GetColorByPriority(task.Priority), @UserTaskColorsHelper.GetColorByPriority(task.Priority))"></div>
+                                            @task.Name
+
+                                            <div>
+                                                <a asp-controller="UserTask" asp-action="EditUserTask" asp-route-id="@task.Id"><i class="far fa-edit"></i></a> |
+                                                <a asp-controller="UserTask" asp-action="DeleteUserTask" asp-route-id="@task.Id"><i class="far fa-trash-alt mr-1"></i></a>
+                                            </div>
+                                        </div>
+
+
+                                    </li>
+                                }
+                            </ul>
+                        }
+                        else
+                        {
+                            <ul class="list-group-horizontal list-unstyled m-2 ">
+
+                                @foreach (var task in tasklist.UserTasks)
+                                {
+                                    <li class="m-1 pl-1 TaskContainer">
+
+                                        <div class=" border TaskPanel" style="padding-left: 5px; padding-right: 3px; background-color:@UserTaskColorsHelper.GetTaskPanelBackGroundColor(task.IsCompleted)">
+                                            <input type="checkbox" asp-action="ChangeUseTaskCompleted" checked="@task.IsCompleted" asp-route-id="@task.Id" disabled="disabled" />
+                                            <span style="display:inline; margin-left:5px    ">@task.Priority</span>
+                                            <div class="PriorityStatus" style="background: linear-gradient(138deg,@UserTaskColorsHelper.GetColorByPriority(task.Priority), @UserTaskColorsHelper.GetColorByPriority(task.Priority))"></div>
+                                            @task.Name
+
+                                            <div>
+                                                <a asp-controller="UserTask" asp-action="EditUserTask" asp-route-id="@task.Id"><i class="far fa-edit"></i></a> |
+                                                <a asp-controller="UserTask" asp-action="DeleteUserTask" asp-route-id="@task.Id"><i class="far fa-trash-alt mr-1"></i></a>
+                                            </div>
+                                        </div>
+
+
+                                    </li>
+                                }
+                            </ul>
+
+                        }
+
+                    </li>
+                }
+
+            </ul>
+        }
+
+
+    </div>
     }
 </div>
 

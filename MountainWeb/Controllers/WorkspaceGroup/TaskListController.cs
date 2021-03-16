@@ -180,7 +180,31 @@ namespace MountainWeb.Controllers.WorkspaceGroup
         {
             return _context.TaskList.Any(e => e.Id == id);
         }
+         public async void ChangeTaskListExpand(int id, bool IsExpanded)
+        {
+            var taskListSettings = _context.aimSettings.First(s => s.AimId == id);
+            taskListSettings.Expanded = IsExpanded;
+            _context.Update(taskListSettings);
+            await _context.SaveChangesAsync();
+        }
+      
+        public TaskListSettings TaskListSettingsIsExistOrCreate(int listId)
+        {
+            if (!_context.taskListSettings.Any(s => s.TaskListId == listId))
+            {
+                TaskListSettings listSettings = new TaskListSettings()
+                {
+                    TaskListId= listId,
+                    Expanded = false,
+                    TaskList = _context.TaskList.First(s => s.Id == listId)
 
+                };
+                _context.taskListSettings.Add(listSettings);
+                _context.SaveChanges();
+                return listSettings;
+            }
+            else return _context.taskListSettings.First(s => s.TaskListId == listId);
+        }
 
 
     }
