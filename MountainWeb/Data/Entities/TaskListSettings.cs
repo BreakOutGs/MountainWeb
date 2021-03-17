@@ -11,6 +11,6 @@ namespace MountainWeb.Data.Entities
         public int TaskListId  { get; set; }
         public TaskList TaskList { get; set; }
         
-
+       
     }
 }

@@ -10,5 +10,7 @@ namespace MountainWeb.Data.Entities
 
         public int AimId { get; set; }
         public Aim Aim{ get; set; }
+
+      
     }
 }

@@ -51,17 +51,25 @@ namespace MountainWeb.Controllers.WorkspaceGroup
                     Name = createModel.Name,
                     Description = createModel.Description,
                     AimId = id,
-                    Aim = aim
+                    Aim = aim,
                 };
-
-
-                _context.TaskList.Add(listToAdd);
-                await _context.SaveChangesAsync();
                 _context.eventLogs.Add(new EventLog()
                 {
                     Message = ("User(id: " + user.Id + ", login: " + user.UserName + ") edited TaskList(id: " + listToAdd.Id + ", name:" + listToAdd.Name + ")"),
                     EventType = EventTypes.TasksListCreated
                 });
+                _context.TaskList.Add(listToAdd);
+                await _context.SaveChangesAsync();
+
+                listToAdd.Settings = new TaskListSettings()
+                {
+                    TaskList = listToAdd,
+                    TaskListId = listToAdd.Id
+                };
+                _context.taskListSettings.Add(listToAdd.Settings);
+                _context.TaskList.Update(listToAdd);
+                await _context.SaveChangesAsync();
+
                 return RedirectToAction("Index", "Workspace", "");
             }
             return View(createModel);
@@ -165,7 +173,8 @@ namespace MountainWeb.Controllers.WorkspaceGroup
         public async Task<IActionResult> DeleteTaskListConfirmed(int id)
         {
             var user = await _userManager.GetUserAsync(HttpContext.User);
-            var list = await _context.TaskList.Include(l => l.UserTasks).SingleAsync(l => l.Id == id);
+            var list = await _context.TaskList.Include(l => l.UserTasks).Include(l=>l.Settings).SingleAsync(l => l.Id == id);
+            _context.taskListSettings.Remove(list.Settings);
             _context.TaskList.Remove(list);
             _context.eventLogs.Add(new EventLog()
             {
@@ -180,28 +189,29 @@ namespace MountainWeb.Controllers.WorkspaceGroup
         {
             return _context.TaskList.Any(e => e.Id == id);
         }
-         public async void ChangeTaskListExpand(int id, bool IsExpanded)
+         public void ChangeTaskListExpand(int id, bool IsExpanded)
         {
-            var taskListSettings = _context.aimSettings.First(s => s.AimId == id);
+            var taskListSettings = _context.taskListSettings.First(s => s.TaskListId == id);
             taskListSettings.Expanded = IsExpanded;
             _context.Update(taskListSettings);
-            await _context.SaveChangesAsync();
+            _context.SaveChanges();
         }
       
         public TaskListSettings TaskListSettingsIsExistOrCreate(int listId)
         {
             if (!_context.taskListSettings.Any(s => s.TaskListId == listId))
             {
-                TaskListSettings listSettings = new TaskListSettings()
+                var list = _context.TaskList.First(list => list.Id == listId);
+                list.Settings = new TaskListSettings()
                 {
-                    TaskListId= listId,
-                    Expanded = false,
-                    TaskList = _context.TaskList.First(s => s.Id == listId)
-
+                    TaskList = list,
+                    TaskListId = list.Id
                 };
-                _context.taskListSettings.Add(listSettings);
+               
+                _context.taskListSettings.Add(list.Settings);
+                _context.TaskList.Update(list);
                 _context.SaveChanges();
-                return listSettings;
+                return list.Settings;
             }
             else return _context.taskListSettings.First(s => s.TaskListId == listId);
         }

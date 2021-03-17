@@ -10,10 +10,10 @@ namespace MountainWeb.Models
 
     public class WorkspaceViewModel
     {
-       
 
+        public Dictionary<bool, string> listExpandedStyle { get; private set; } = new Dictionary<bool, string> { { false, "Mactivedrop" }, { true, "" } };
       
-
+        
        
 
         public ICollection<ShowAimViewModel> Aims { get; set; }

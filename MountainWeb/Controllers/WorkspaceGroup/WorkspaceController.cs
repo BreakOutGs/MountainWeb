@@ -129,22 +129,24 @@ namespace MountainWeb.Controllers
             return View(aim);
         }
 
-       [HttpPost]
-       public async Task<bool>  ChangeExpand(int ItemId, string ItemType, bool Expanded)
-       {
+        [HttpPost]
+        public IActionResult ChangeExpand(int ItemId, string ItemType, bool Expanded)
+        {
+
             switch (ItemType)
             {
                 case "Aim":
-                    Url.Action("ChangeAimExpand", "Aim", new { id = ItemId, IsExpanded = Expanded });
+                    return RedirectToAction("ChangeAimExpand", "Aim", new { id = ItemId, IsExpanded = Expanded });
                     break;
                 case "TaskList":
-                    Url.Action("ChangeTaskListExpand", "TaskList", new { id = ItemId, IsExpanded = Expanded });
+                    return RedirectToAction("ChangeTaskListExpand", "TaskList", new { id = ItemId, IsExpanded = Expanded });
+                    //   RedirectToAction(Url.Action("ChangeTaskListExpand", "TaskList", new { id = ItemId, IsExpanded = Expanded }));
                     break;
-                default: return false;
-                   
-            } 
-            return true;
-       }
+                default: return null;
+
+            }
+            return null;
+        }
 
 
 

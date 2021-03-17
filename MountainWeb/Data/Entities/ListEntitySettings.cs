@@ -11,6 +11,10 @@ namespace MountainWeb.Data.Entities
 
         public bool Expanded { get; set; }
 
+        public ListEntitySettings()
+        {
+            Expanded = false;
+        }
         
     }
 }

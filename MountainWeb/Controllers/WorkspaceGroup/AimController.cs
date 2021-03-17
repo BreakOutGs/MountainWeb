@@ -53,14 +53,23 @@ namespace MountainWeb.Controllers.WorkspaceGroup
                     ApplicationUserId = user.Id
                 };
 
-
                 _context.Aim.Add(aimToAdd);
+               
                 _context.eventLogs.Add(new EventLog()
                 {
                     Message = ("User(id: " + user.Id + ", login: " + user.UserName + ") created Aim(id: " + aimToAdd.Id + ", name:" + aimToAdd.Name + ")"),
                     EventType = EventTypes.AimCreated
                 }
-                ); ;
+                );
+                await _context.SaveChangesAsync();
+
+                aimToAdd.Settings = new AimSettings()
+                {
+                    Aim = aimToAdd,
+                    AimId = aimToAdd.Id
+                };
+                _context.aimSettings.Add(aimToAdd.Settings);
+                _context.Aim.Update(aimToAdd);
                 await _context.SaveChangesAsync();
                 return RedirectToAction("Index", "Workspace", "");
             }
@@ -177,12 +186,19 @@ namespace MountainWeb.Controllers.WorkspaceGroup
         public async Task<IActionResult> DeleteAimConfirmed(int id)
         {
             var user = await _userManager.GetUserAsync(HttpContext.User);
-            var aim = await _context.Aim.Include(aim => aim.TaskLists).ThenInclude(e => e.UserTasks).SingleAsync(a => a.Id == id);
+            var aim = await _context.Aim
+                .Include(a=>a.Settings)
+                .Include(aim => aim.TaskLists)
+                .ThenInclude(e => e.UserTasks)
+                .Include(aim=>aim.TaskLists)
+                .ThenInclude(l=>l.Settings)
+                .SingleAsync(a => a.Id == id);
             _context.eventLogs.Add(new EventLog()
             {
                 Message = ("User(id: " + user.Id + ", login: " + user.UserName + ") removed Aim(id: " + aim.Id + ", name:" + aim.Name + ")"),
                 EventType = EventTypes.AimRemoved
             });
+            _context.aimSettings.Remove(aim.Settings);
             _context.Aim.Remove(aim);
             await _context.SaveChangesAsync();
             return RedirectToAction("Index", "Workspace", "");
@@ -192,28 +208,28 @@ namespace MountainWeb.Controllers.WorkspaceGroup
         {
             return _context.Aim.Any(e => e.Id == id);
         }
-        public async void ChangeAimExpand(int id, bool IsExpanded)
+        public  void ChangeAimExpand(int id, bool IsExpanded)
         {
 
-            var aimSettings = AimSettingsIsExistOrCreate(id);
+            var aimSettings = AimSettingsExist(id);
             aimSettings.Expanded = IsExpanded;
             _context.Update(aimSettings);
-            await _context.SaveChangesAsync();
+            _context.SaveChanges();
         }
-        public AimSettings AimSettingsIsExistOrCreate(int aimId)
+        public AimSettings AimSettingsExist(int aimId)
         {
             if (!_context.aimSettings.Any(s => s.AimId == aimId))
             {
-                AimSettings aimSettings = new AimSettings()
+                var aim = _context.Aim.First(aim => aim.Id == aimId);
+                aim.Settings = new AimSettings()
                 {
-                    AimId = aimId,
-                    Expanded = false,
-                    Aim = _context.Aim.First(s => s.Id == aimId)
-
+                    Aim = aim,
+                    AimId = aim.Id
                 };
-                _context.aimSettings.Add(aimSettings);
+                _context.aimSettings.Add(aim.Settings);
+                _context.Update(aim);
                 _context.SaveChanges();
-                return aimSettings;
+                return aim.Settings;
             }
             else return _context.aimSettings.First(s => s.AimId == aimId);
         }
