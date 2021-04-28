@@ -53,7 +53,7 @@ namespace MountainWeb.Controllers.WorkspaceGroup
                     AimId = id,
                     Aim = aim,
                 };
-                _context.eventLogs.Add(new EventLog()
+                _context.EventLogs.Add(new EventLog()
                 {
                     Message = ("User(id: " + user.Id + ", login: " + user.UserName + ") edited TaskList(id: " + listToAdd.Id + ", name:" + listToAdd.Name + ")"),
                     EventType = EventTypes.TasksListCreated
@@ -66,7 +66,7 @@ namespace MountainWeb.Controllers.WorkspaceGroup
                     TaskList = listToAdd,
                     TaskListId = listToAdd.Id
                 };
-                _context.taskListSettings.Add(listToAdd.Settings);
+                _context.TaskListSettings.Add(listToAdd.Settings);
                 _context.TaskList.Update(listToAdd);
                 await _context.SaveChangesAsync();
 
@@ -113,7 +113,7 @@ namespace MountainWeb.Controllers.WorkspaceGroup
 
                 try
                 {
-                    _context.eventLogs.Add(new EventLog()
+                    _context.EventLogs.Add(new EventLog()
                     {
                         Message = ("User(id: " + user.Id + ", login: " + user.UserName + ") edited TaskList(id: " + list.Id + ", name:" + list.Name + ")"),
                         EventType = EventTypes.TaskEdited
@@ -153,7 +153,7 @@ namespace MountainWeb.Controllers.WorkspaceGroup
             {
                 return NotFound();
             }
-            if (list.Aim.ApplicationUserId != user.Id)
+            if (list.Aim.Workspace.ApplicationUserId != user.Id)
             {
                 return NotFound();
             }
@@ -174,9 +174,9 @@ namespace MountainWeb.Controllers.WorkspaceGroup
         {
             var user = await _userManager.GetUserAsync(HttpContext.User);
             var list = await _context.TaskList.Include(l => l.UserTasks).Include(l=>l.Settings).SingleAsync(l => l.Id == id);
-            _context.taskListSettings.Remove(list.Settings);
+            _context.TaskListSettings.Remove(list.Settings);
             _context.TaskList.Remove(list);
-            _context.eventLogs.Add(new EventLog()
+            _context.EventLogs.Add(new EventLog()
             {
                 Message = ("User(id: " + user.Id + ", login: " + user.UserName + ") removes TaskList(id: " + list.Id + ", name:" + list.Name + ")"),
                 EventType = EventTypes.TasksListRemoved
@@ -191,7 +191,7 @@ namespace MountainWeb.Controllers.WorkspaceGroup
         }
          public void ChangeTaskListExpand(int id, bool IsExpanded)
         {
-            var taskListSettings = _context.taskListSettings.First(s => s.TaskListId == id);
+            var taskListSettings = _context.TaskListSettings.First(s => s.TaskListId == id);
             taskListSettings.Expanded = IsExpanded;
             _context.Update(taskListSettings);
             _context.SaveChanges();
@@ -199,7 +199,7 @@ namespace MountainWeb.Controllers.WorkspaceGroup
       
         public TaskListSettings TaskListSettingsIsExistOrCreate(int listId)
         {
-            if (!_context.taskListSettings.Any(s => s.TaskListId == listId))
+            if (!_context.TaskListSettings.Any(s => s.TaskListId == listId))
             {
                 var list = _context.TaskList.First(list => list.Id == listId);
                 list.Settings = new TaskListSettings()
@@ -208,12 +208,12 @@ namespace MountainWeb.Controllers.WorkspaceGroup
                     TaskListId = list.Id
                 };
                
-                _context.taskListSettings.Add(list.Settings);
+                _context.TaskListSettings.Add(list.Settings);
                 _context.TaskList.Update(list);
                 _context.SaveChanges();
                 return list.Settings;
             }
-            else return _context.taskListSettings.First(s => s.TaskListId == listId);
+            else return _context.TaskListSettings.First(s => s.TaskListId == listId);
         }
 
 

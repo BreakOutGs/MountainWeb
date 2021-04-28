@@ -50,7 +50,7 @@ namespace MountainWeb.Controllers.WorkspaceGroup
             {
                 var list = await _context.TaskList.Include(l => l.Aim).SingleAsync(l => l.Id == id);
                 var user = await _userManager.GetUserAsync(HttpContext.User);
-                if (user.Id != list.Aim.ApplicationUserId) return NotFound();
+                if (user.Id != list.Aim.Workspace.ApplicationUserId) return NotFound();
                 UserTask userTask = new UserTask()
                 {
                     Name = createViewModel.Name,
@@ -62,7 +62,7 @@ namespace MountainWeb.Controllers.WorkspaceGroup
 
 
                 _context.UserTask.Add(userTask);
-                _context.eventLogs.Add(new EventLog()
+                _context.EventLogs.Add(new EventLog()
                 {
                     Message = ("User(id: " + user.Id + ", login: " + user.UserName + ") created UserTask(id: " + userTask.Id + ", name:" + userTask.Name + ")"),
                     EventType = EventTypes.TaskCreated
@@ -95,7 +95,7 @@ namespace MountainWeb.Controllers.WorkspaceGroup
                 IsCompleted = userTask.IsCompleted
             };
 
-            if (user.Id != userTask.TaskList.Aim.ApplicationUserId)
+            if (user.Id != userTask.TaskList.Aim.Workspace.ApplicationUserId)
             {
                 return NotFound();
             }
@@ -128,7 +128,7 @@ namespace MountainWeb.Controllers.WorkspaceGroup
                 try
                 {
                     _context.Update(userTask);
-                    _context.eventLogs.Add(new EventLog()
+                    _context.EventLogs.Add(new EventLog()
                     {
                         Message = ("User(id: " + user.Id + ", login: " + user.UserName + ") edited UserTask(id: " + userTask.Id + ", name:" + userTask.Name + ")"),
                         EventType = EventTypes.TaskEdited
@@ -167,7 +167,7 @@ namespace MountainWeb.Controllers.WorkspaceGroup
             {
                 return NotFound();
             }
-            if (userTask.TaskList.Aim.ApplicationUserId != user.Id)
+            if (userTask.TaskList.Aim.Workspace.ApplicationUserId != user.Id)
             {
                 return NotFound();
             }
@@ -190,7 +190,7 @@ namespace MountainWeb.Controllers.WorkspaceGroup
             var user = await _userManager.GetUserAsync(HttpContext.User);
             var userTask = await _context.UserTask.FindAsync(id);
             _context.UserTask.Remove(userTask);
-            _context.eventLogs.Add(new EventLog()
+            _context.EventLogs.Add(new EventLog()
             {
                 Message = ("User(id: " + user.Id + ", login: " + user.UserName + ") deleted UserTask(id: " + userTask.Id + ", name:" + userTask.Name + ")"),
                 EventType = EventTypes.TaskRemoved
@@ -211,12 +211,12 @@ namespace MountainWeb.Controllers.WorkspaceGroup
             if (!UserTaskExist(id)) return false;
             var user = await _userManager.GetUserAsync(HttpContext.User);
             var userTask = await _context.UserTask.Include(t => t.TaskList).ThenInclude(l => l.Aim).SingleAsync(t => t.Id == id);
-            if (user.Id != userTask.TaskList.Aim.ApplicationUserId) return false;
+            if (user.Id != userTask.TaskList.Aim.Workspace.ApplicationUserId) return false;
             userTask.IsCompleted = !userTask.IsCompleted;
             try
             {
                 _context.Update(userTask);
-                _context.eventLogs.Add(new EventLog()
+                _context.EventLogs.Add(new EventLog()
                 {
                     Message = ("User(id: " + user.Id + ", login: " + user.UserName + ") changes completing UserTask(id: " + userTask.Id + ", name:" + userTask.Name + ")"),
                     EventType = EventTypes.TaskEdited

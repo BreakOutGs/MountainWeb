@@ -3,17 +3,15 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MountainWeb.Data;
 
-namespace MountainWeb.Data.Migrations
+namespace MountainWeb.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210128190535_AddAimToDataBase")]
-    partial class AddAimToDataBase
+    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
     {
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -99,12 +97,10 @@ namespace MountainWeb.Data.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
                     b.Property<string>("LoginProvider")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ProviderKey")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ProviderDisplayName")
                         .HasColumnType("nvarchar(max)");
@@ -141,12 +137,10 @@ namespace MountainWeb.Data.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("LoginProvider")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Value")
                         .HasColumnType("nvarchar(max)");
@@ -163,18 +157,42 @@ namespace MountainWeb.Data.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("ApplicationUserId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("WorkspaceId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("ApplicationUserId");
+                    b.HasIndex("WorkspaceId");
 
                     b.ToTable("Aim");
+                });
+
+            modelBuilder.Entity("MountainWeb.Data.Entities.AimSettings", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("AimId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("Expanded")
+                        .HasColumnType("bit");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AimId")
+                        .IsUnique();
+
+                    b.ToTable("AimSettings");
                 });
 
             modelBuilder.Entity("MountainWeb.Data.Entities.ApplicationUser", b =>
@@ -242,6 +260,24 @@ namespace MountainWeb.Data.Migrations
                     b.ToTable("AspNetUsers");
                 });
 
+            modelBuilder.Entity("MountainWeb.Data.Entities.EventLog", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("EventType")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Message")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("EventLogs");
+                });
+
             modelBuilder.Entity("MountainWeb.Data.Entities.TaskList", b =>
                 {
                     b.Property<int>("Id")
@@ -249,7 +285,7 @@ namespace MountainWeb.Data.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("AimId")
+                    b.Property<int>("AimId")
                         .HasColumnType("int");
 
                     b.Property<string>("Description")
@@ -264,6 +300,27 @@ namespace MountainWeb.Data.Migrations
                     b.HasIndex("AimId");
 
                     b.ToTable("TaskList");
+                });
+
+            modelBuilder.Entity("MountainWeb.Data.Entities.TaskListSettings", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<bool>("Expanded")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("TaskListId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TaskListId")
+                        .IsUnique();
+
+                    b.ToTable("TaskListSettings");
                 });
 
             modelBuilder.Entity("MountainWeb.Data.Entities.UserTask", b =>
@@ -283,17 +340,73 @@ namespace MountainWeb.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("TaskListId")
+                    b.Property<int>("Priority")
                         .HasColumnType("int");
 
-                    b.Property<string>("UserName")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("TaskListId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("TaskListId");
 
                     b.ToTable("UserTask");
+                });
+
+            modelBuilder.Entity("MountainWeb.Data.Entities.UserTaskSettings", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("UserTaskId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserTaskId")
+                        .IsUnique();
+
+                    b.ToTable("UserTaskSettings");
+                });
+
+            modelBuilder.Entity("MountainWeb.Data.Entities.Workspace", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("ApplicationUserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ApplicationUserId");
+
+                    b.ToTable("Workspaces");
+                });
+
+            modelBuilder.Entity("MountainWeb.Data.Entities.WorkspaceSettings", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("WorkspaceId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("WorkspaceId")
+                        .IsUnique();
+
+                    b.ToTable("WorkspaceSettings");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -349,23 +462,72 @@ namespace MountainWeb.Data.Migrations
 
             modelBuilder.Entity("MountainWeb.Data.Entities.Aim", b =>
                 {
-                    b.HasOne("MountainWeb.Data.Entities.ApplicationUser", null)
+                    b.HasOne("MountainWeb.Data.Entities.Workspace", "Workspace")
                         .WithMany("Aims")
-                        .HasForeignKey("ApplicationUserId");
+                        .HasForeignKey("WorkspaceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("MountainWeb.Data.Entities.AimSettings", b =>
+                {
+                    b.HasOne("MountainWeb.Data.Entities.Aim", "Aim")
+                        .WithOne("Settings")
+                        .HasForeignKey("MountainWeb.Data.Entities.AimSettings", "AimId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("MountainWeb.Data.Entities.TaskList", b =>
                 {
-                    b.HasOne("MountainWeb.Data.Entities.Aim", null)
+                    b.HasOne("MountainWeb.Data.Entities.Aim", "Aim")
                         .WithMany("TaskLists")
-                        .HasForeignKey("AimId");
+                        .HasForeignKey("AimId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("MountainWeb.Data.Entities.TaskListSettings", b =>
+                {
+                    b.HasOne("MountainWeb.Data.Entities.TaskList", "TaskList")
+                        .WithOne("Settings")
+                        .HasForeignKey("MountainWeb.Data.Entities.TaskListSettings", "TaskListId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("MountainWeb.Data.Entities.UserTask", b =>
                 {
-                    b.HasOne("MountainWeb.Data.Entities.TaskList", null)
+                    b.HasOne("MountainWeb.Data.Entities.TaskList", "TaskList")
                         .WithMany("UserTasks")
-                        .HasForeignKey("TaskListId");
+                        .HasForeignKey("TaskListId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("MountainWeb.Data.Entities.UserTaskSettings", b =>
+                {
+                    b.HasOne("MountainWeb.Data.Entities.UserTask", "UserTask")
+                        .WithOne("Settings")
+                        .HasForeignKey("MountainWeb.Data.Entities.UserTaskSettings", "UserTaskId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("MountainWeb.Data.Entities.Workspace", b =>
+                {
+                    b.HasOne("MountainWeb.Data.Entities.ApplicationUser", "User")
+                        .WithMany("Workspaces")
+                        .HasForeignKey("ApplicationUserId");
+                });
+
+            modelBuilder.Entity("MountainWeb.Data.Entities.WorkspaceSettings", b =>
+                {
+                    b.HasOne("MountainWeb.Data.Entities.Workspace", null)
+                        .WithOne("Settings")
+                        .HasForeignKey("MountainWeb.Data.Entities.WorkspaceSettings", "WorkspaceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

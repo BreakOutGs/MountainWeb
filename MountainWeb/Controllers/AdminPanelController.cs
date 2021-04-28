@@ -124,10 +124,10 @@ namespace MountainWeb.Controllers
             List<EventLog> _logs;
             if (EventType != null && EventType!="Всі")
             {
-                 _logs = _context.eventLogs.Where(l=>l.EventType == (EventTypes)Enum.Parse(typeof(EventTypes), EventType)).ToList();
+                 _logs = _context.EventLogs.Where(l=>l.EventType == (EventTypes)Enum.Parse(typeof(EventTypes), EventType)).ToList();
                 ViewData["EventType"] = EventType;
             }
-            else { _logs = _context.eventLogs.ToList();
+            else { _logs = _context.EventLogs.ToList();
                 ViewData["EventType"] = "Всі";
             }
             if (EventSearchString != null) _logs = _logs.Where(l => l.Message.Contains(EventSearchString)).ToList();

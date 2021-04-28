@@ -10,8 +10,8 @@ namespace MountainWeb.Data.Entities
     {
         public ApplicationUser()
         {
-            Aims = new List<Aim>();
+            Workspaces = new List<Workspace>();
         }
-        public ICollection<Aim> Aims  { get; set; }
+        public ICollection<Workspace> Workspaces  { get; set; }
     }
 }

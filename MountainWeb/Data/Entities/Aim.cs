@@ -17,9 +17,9 @@ namespace MountainWeb.Data.Entities
 
         public ICollection<TaskList> TaskLists { get; set; }
 
-        public string ApplicationUserId { get; set; }
+        public int WorkspaceId { get; set; }
+        public Workspace Workspace { get; set; }
 
-        public ApplicationUser User { get; set; }
 
         public AimSettings Settings { get; set; }
 

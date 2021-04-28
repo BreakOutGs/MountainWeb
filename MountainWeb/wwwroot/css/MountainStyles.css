@@ -1,0 +1,81 @@
+﻿
+.Workspaces-Panel{
+    background-color:white;
+    border: 1px #c9c9c9 solid
+}
+.Workspace-ListStyle{
+    border: #000000 2px solid;
+    border-radius: 6px;
+    width:600px;
+    height:30px;
+    margin:10px;
+    padding-top:2px;
+}
+.Workspace-ListStyle > div{
+    display:inline-block;
+}
+.Workspace-ListStyle > div > div{
+    display:inline;
+}
+.Workspace-ListStyle > a{
+    float: right;
+    margin-right: 8px;
+}
+.Workspace-name{
+    width: 300px;
+    text-align:center;
+
+}
+.Mountain-WsContMenu {
+    position: fixed;
+    z-index: 10000;
+    width: 150px;
+    background: #1b1a1a;
+    border-radius: 5px;
+    transform: scale(0);
+    transform-origin: top left;
+}
+
+.Mountain-WsContActive {
+    transform: scale(1);
+    transition: transform 300ms ease-in-out;
+}
+
+.Mountain-WsContMenu .item {
+    padding: 8px 10px;
+    font-size: 15px;
+    color: #eee;
+    display:block;
+}
+.Mountain-WsContMenu .item:hover {
+    background: #555;
+}
+.Mountain-WsContMenu a{
+    display:block
+}
+.Mountain-WsContMenu .item > a > i {
+    display: inline-block;
+    margin-right: 5px;
+    }
+.Mountain-WsContMenu hr {
+    margin: 2px 0px;
+    border-color: #555;
+}
+.Mountain-PageFrame {
+    border: #c9c9c9 solid 2px;
+    border-radius: 6px;
+    padding: 20px;
+}
+.Mountain-PageName{
+    text-align:center;
+    width: 50%;
+}
+.Mountain-WorkspacesToolPanel{
+    width: 600px;
+    margin-top: 30px;
+    margin-bottom: 30px;
+    margin-left:10px;
+}
+.Mountain-WorkspacesToolPanel > div{
+    display: inline-block;
+}

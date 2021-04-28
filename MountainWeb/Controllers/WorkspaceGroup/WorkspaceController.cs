@@ -12,6 +12,7 @@ using MountainWeb.Models;
 using MountainWeb.Models.AimViewModels;
 using MountainWeb.Models.TaskListViewModels;
 using MountainWeb.Models.UserTaskViewModels;
+using MountainWeb.Models.WorkspaceGroup;
 
 namespace MountainWeb.Controllers
 {
@@ -27,19 +28,26 @@ namespace MountainWeb.Controllers
         }
 
         // GET: Workspace
-        public async Task<IActionResult> Index(string SortBy, string SearchText, string UpDown )
+        public async Task<IActionResult> ShowWorkspace(int id, string SortBy, string SearchText, string UpDown )
         {
             WorkspaceViewModel viewModel;
             var user = await _userManager.GetUserAsync(HttpContext.User);
-            var aims = _context.Aim.Include(aim => aim.Settings)
-                .Include(aim => aim.TaskLists).ThenInclude(e => e.UserTasks)
-                .Include(aims => aims.TaskLists).ThenInclude(l => l.Settings)
-                .Where(aim => aim.ApplicationUserId == user.Id).ToList();
-            if(SearchText!=""&&SearchText!=" " && SearchText != null)
+            var workspace = await _context.Workspaces.Where(w => w.Id == id)
+                .Include(wspace => wspace.Settings)
+                .Include(wspace => wspace.Aims)
+                .ThenInclude(aim => aim.Settings)
+                .Include(wspace => wspace.Aims)
+                .ThenInclude(aim => aim.TaskLists)
+                .ThenInclude(tl => tl.Settings)
+                .Include(wspace => wspace.Aims)
+                .ThenInclude(aim => aim.TaskLists)
+               .ThenInclude(tl => tl.UserTasks)
+               .ThenInclude(ut => ut.Settings).FirstAsync();
+          /*  if (SearchText!=""&&SearchText!=" " && SearchText != null)
             {
                 var _aims = new List<Aim>();
                 bool _AimWithText;
-                foreach(var aim in aims)
+                foreach(var aim in workspace.Aims)
                 {
                     _AimWithText = false;
                     if(aim.Name.Contains(SearchText))
@@ -70,8 +78,8 @@ namespace MountainWeb.Controllers
                     if (_AimWithText) _aims.Add(aim);
                 }
                 aims = _aims;
-            }
-            viewModel = new WorkspaceViewModel(aims);
+            } */
+            viewModel = new WorkspaceViewModel(workspace);
             if (SortBy!=null&SortBy!="Без сортування" && SortBy != "Сортування")
             {
                 switch (SortBy)
@@ -108,7 +116,7 @@ namespace MountainWeb.Controllers
                         break;
                 }
             }
-            return View(viewModel);
+            return View("Workspace",viewModel);
         }
 
         // GET: Workspace/Details/5
@@ -148,7 +156,76 @@ namespace MountainWeb.Controllers
             return null;
         }
 
+        // TODO: get Workspaces page
+        public async Task<IActionResult> Index()
+        {
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+            var workspaces = await _context.Workspaces.Where(ws => ws.ApplicationUserId == user.Id).ToListAsync();
+            ChooseWorkspaceMV ViewModel = new ChooseWorkspaceMV() { Workspaces = workspaces };
+            return View(ViewModel);
+        }
+        public  IActionResult ShowCreateWorkspace(int id)
+        {
+            CreateVM ViewModel = new CreateVM();
+            return View("Create", ViewModel); 
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateWorkspace(CreateVM ViewModel)
+        {
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+            Workspace workspace = new Workspace()
+            {
+                Name = ViewModel.Name,
+                ApplicationUserId = user.Id
+            };
+            await _context.Workspaces.AddAsync(workspace);
+            await _context.SaveChangesAsync();
+            return RedirectToAction("Index", "Workspace", "");
+        }
+        public IActionResult ShowEditWorkspace(int id)
+        {
+            Workspace workspace = _context.Workspaces.Where(w => w.Id == id)
+                .Include(w=>w.Settings)
+                .First();
+            ChangeWorkspaceVM ViewModel = new ChangeWorkspaceVM(workspace);
+            return View("Edit");
+        }
+        public async Task<IActionResult> EditWorkspaceAsync(ChangeWorkspaceVM changeViewModel)
+        {
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+            var workspace = await _context.Workspaces.Where(w => w.Id == changeViewModel.Id).SingleAsync();
+            if(user.Id == workspace.ApplicationUserId)
+            {
+                workspace.Name = changeViewModel.Name;
+                _context.Workspaces.Update(workspace);
+                await _context.SaveChangesAsync();
+            }
+           
+            return RedirectToAction("Index", "Workspace", "");
+        }
+        public IActionResult ShowDeleteWorkspace(int id)
+        {
 
+            return View();
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteWorkspace(int id)
+        {
+            var workspace = await _context.Workspaces.SingleAsync(w=>w.Id==id);
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+            if (workspace.ApplicationUserId == user.Id)
+            {
+                _context.Workspaces.Remove(workspace);
+                await _context.SaveChangesAsync();
+                
+            }
+            return RedirectToAction("Index", "Workspace", "");
+
+        }
+        // TODO: create Workspace
+        // TODO: delete workspace 
 
 
 

@@ -1,0 +1,12 @@
+﻿.UserTaskPanel{
+    border-radius: 6px;
+    border: 1px #000000 solid ;
+    background: #ffffff
+}
+.UserTaskProgressBar {
+    border: none;
+    background-color: rgba(31,85,223,0.25);
+}
+.TaskCompletedBox{
+
+}

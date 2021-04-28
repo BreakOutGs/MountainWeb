@@ -4,16 +4,12 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace MountainWeb.Models.AimViewModels
+namespace MountainWeb.Data.Entities
 {
-    public class CreateAimViewModel
+    public class WorkspaceSettings
     {
-        [Required]
-        public string Name { get; set; }
-
-        public string Description { get; set; }
-
+        [Key]
+        public int Id { get; set; }
         public int WorkspaceId { get; set; }
-
     }
 }

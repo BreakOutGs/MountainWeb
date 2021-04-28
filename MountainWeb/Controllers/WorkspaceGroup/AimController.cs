@@ -29,9 +29,12 @@ namespace MountainWeb.Controllers.WorkspaceGroup
         }
 
         // GET: Workspace/Create
-        public IActionResult CreateAim()
+        public IActionResult CreateAim(int id)
         {
             CreateAimViewModel model = new CreateAimViewModel();
+            {
+                model.WorkspaceId = id;
+            }
             return View("CreateAim", model);
         }
 
@@ -50,12 +53,12 @@ namespace MountainWeb.Controllers.WorkspaceGroup
                 {
                     Name = createAimViewModel.Name,
                     Description = createAimViewModel.Description,
-                    ApplicationUserId = user.Id
+                    WorkspaceId = createAimViewModel.WorkspaceId
                 };
 
                 _context.Aim.Add(aimToAdd);
                
-                _context.eventLogs.Add(new EventLog()
+                _context.EventLogs.Add(new EventLog()
                 {
                     Message = ("User(id: " + user.Id + ", login: " + user.UserName + ") created Aim(id: " + aimToAdd.Id + ", name:" + aimToAdd.Name + ")"),
                     EventType = EventTypes.AimCreated
@@ -68,7 +71,7 @@ namespace MountainWeb.Controllers.WorkspaceGroup
                     Aim = aimToAdd,
                     AimId = aimToAdd.Id
                 };
-                _context.aimSettings.Add(aimToAdd.Settings);
+                _context.AimSettings.Add(aimToAdd.Settings);
                 _context.Aim.Update(aimToAdd);
                 await _context.SaveChangesAsync();
                 return RedirectToAction("Index", "Workspace", "");
@@ -95,7 +98,7 @@ namespace MountainWeb.Controllers.WorkspaceGroup
             {
                 return NotFound();
             }
-            if (user.Id != aim.ApplicationUserId)
+            if (user.Id != aim.Workspace.ApplicationUserId)
             {
                 return NotFound();
             }
@@ -126,7 +129,7 @@ namespace MountainWeb.Controllers.WorkspaceGroup
                 try
                 {
                     _context.Update(aim);
-                    _context.eventLogs.Add(new EventLog()
+                    _context.EventLogs.Add(new EventLog()
                     {
                         Message = ("User(id: " + user.Id + ", login: " + user.UserName + ") edited Aim(id: " + aim.Id + ", name:" + aim.Name + ")"),
                         EventType = EventTypes.AimEdited
@@ -166,7 +169,7 @@ namespace MountainWeb.Controllers.WorkspaceGroup
             {
                 return NotFound();
             }
-            if (aim.ApplicationUserId != user.Id)
+            if (aim.Workspace.ApplicationUserId != user.Id)
             {
                 return NotFound();
             }
@@ -193,12 +196,12 @@ namespace MountainWeb.Controllers.WorkspaceGroup
                 .Include(aim=>aim.TaskLists)
                 .ThenInclude(l=>l.Settings)
                 .SingleAsync(a => a.Id == id);
-            _context.eventLogs.Add(new EventLog()
+            _context.EventLogs.Add(new EventLog()
             {
                 Message = ("User(id: " + user.Id + ", login: " + user.UserName + ") removed Aim(id: " + aim.Id + ", name:" + aim.Name + ")"),
                 EventType = EventTypes.AimRemoved
             });
-            _context.aimSettings.Remove(aim.Settings);
+            _context.AimSettings.Remove(aim.Settings);
             _context.Aim.Remove(aim);
             await _context.SaveChangesAsync();
             return RedirectToAction("Index", "Workspace", "");
@@ -218,7 +221,7 @@ namespace MountainWeb.Controllers.WorkspaceGroup
         }
         public AimSettings AimSettingsExist(int aimId)
         {
-            if (!_context.aimSettings.Any(s => s.AimId == aimId))
+            if (!_context.AimSettings.Any(s => s.AimId == aimId))
             {
                 var aim = _context.Aim.First(aim => aim.Id == aimId);
                 aim.Settings = new AimSettings()
@@ -226,12 +229,12 @@ namespace MountainWeb.Controllers.WorkspaceGroup
                     Aim = aim,
                     AimId = aim.Id
                 };
-                _context.aimSettings.Add(aim.Settings);
+                _context.AimSettings.Add(aim.Settings);
                 _context.Update(aim);
                 _context.SaveChanges();
                 return aim.Settings;
             }
-            else return _context.aimSettings.First(s => s.AimId == aimId);
+            else return _context.AimSettings.First(s => s.AimId == aimId);
         }
 
     }
