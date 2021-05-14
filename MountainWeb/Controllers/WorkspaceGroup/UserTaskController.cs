@@ -1,13 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MountainWeb.Data;
 using MountainWeb.Data.Entities;
 using MountainWeb.Models.UserTaskViewModels;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace MountainWeb.Controllers.WorkspaceGroup
 {
@@ -48,7 +47,9 @@ namespace MountainWeb.Controllers.WorkspaceGroup
 
             if (ModelState.IsValid)
             {
-                var list = await _context.TaskList.Include(l => l.Aim).SingleAsync(l => l.Id == id);
+                var list = await _context.TaskList.Include(l => l.Aim).
+                    ThenInclude(a => a.Workspace).
+                    SingleAsync(l => l.Id == id);
                 var user = await _userManager.GetUserAsync(HttpContext.User);
                 if (user.Id != list.Aim.Workspace.ApplicationUserId) return NotFound();
                 UserTask userTask = new UserTask()
@@ -81,7 +82,12 @@ namespace MountainWeb.Controllers.WorkspaceGroup
                 return NotFound();
             }
             var user = await _userManager.GetUserAsync(HttpContext.User);
-            var userTask = await _context.UserTask.Include(l => l.TaskList).ThenInclude(l => l.Aim).SingleAsync(t => t.Id == id);
+            var userTask = await _context.UserTask.Include(l => l.TaskList).
+                ThenInclude(l => l.Aim).
+                ThenInclude(a => a.Workspace).
+                Include(ut => ut.Settings).
+                Include(ut => ut.Reminds).
+                SingleAsync(t => t.Id == id);
             if (userTask == null)
             {
                 return NotFound();
@@ -92,14 +98,17 @@ namespace MountainWeb.Controllers.WorkspaceGroup
                 Priority = userTask.Priority,
                 Name = userTask.Name,
                 Description = userTask.Description,
-                IsCompleted = userTask.IsCompleted
+                IsCompleted = userTask.IsCompleted,
+                Settings = userTask.Settings,
+                Reminds = userTask.Reminds,
+                AppUserId = userTask.TaskList.Aim.Workspace.ApplicationUserId
             };
 
             if (user.Id != userTask.TaskList.Aim.Workspace.ApplicationUserId)
             {
                 return NotFound();
             }
-            return View("EditUserTask", editViewModel);
+            return View("UserTaskEditUpdated", editViewModel);
         }
 
         // POST: Workspace/Edit/5
@@ -123,6 +132,8 @@ namespace MountainWeb.Controllers.WorkspaceGroup
                     userTask.Priority = editModel.Priority;
                     userTask.Description = editModel.Description;
                     userTask.IsCompleted = editModel.IsCompleted;
+                    userTask.Settings = editModel.Settings;
+                    userTask.Reminds = editModel.Reminds;
                 }
 
                 try
@@ -236,5 +247,21 @@ namespace MountainWeb.Controllers.WorkspaceGroup
             }
             return true;
         }
+        public bool AddRemind(int TaskId, DateTime dateTime, int IntervalMinutes)
+        {
+            var task = _context.UserTask.Single(t => t.Id == TaskId);
+            Remind remind = new Remind()
+            {
+                DateTime = dateTime,
+                MinuteInterval = IntervalMinutes,
+                Task = task,
+                TaskId = TaskId
+            };
+            task.Reminds.Add(remind);
+            _context.Reminds.Add(remind);
+            _context.SaveChanges();
+            return true;
+        }
+
     }
 }

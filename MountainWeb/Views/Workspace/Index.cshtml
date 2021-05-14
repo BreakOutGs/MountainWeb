@@ -21,6 +21,43 @@
         });
     });
 </script>
+<script type="text/javascript">
+    function DeleteWorkspace(WId) {
+        var msgBoxHeader = "Виделення робочого місця";
+        var confirmText = "Видалити";
+        var canselText = "Відмінити";
+        var msgMainText = "Введіть \" " + confirmText + " \" щоб відтвердити дію, або " + canselText + " якщо передумали";
+        var promptText = prompt(msgBoxHeader + "\n" + msgMainText, confirmText+" | "+canselText);
+        var WorkspaceId = WId;
+        var WorkspacePanel = this;
+        
+        if (promptText == confirmText) {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("DeleteWorkspace", "Workspace")",
+                data: { Id: WorkspaceId },
+                dataType: "text",
+                success: function (msg) {
+                    console.log("Workspace " + WorkspaceId + " was deleted.");
+                    removeWorkspacePanel(WorkspaceId);
+                    console.log(msg)
+                },
+                error: function (req, status, error) {
+                    console.log(msg);
+                }
+            });
+        }
+        function removeWorkspacePanel(id) {
+            var panelId = "WorkspacePanel_" + id;
+            console.log("Deleting: " + panelId );
+            var panel = document.getElementById(panelId)
+            var parent = panel.parentNode;
+           
+            parent.removeChild(panel);
+        }
+    }
+
+</script>
 
 <div>
     <div class="Mountain-PageName">
@@ -49,9 +86,9 @@
     </div>
     <div>
 
-        @foreach (Workspace workspace in Model.Workspaces)
-        {
-        <div class="Workspace-ListStyle">
+        @foreach (Workspace workspace in Model.Workspaces){
+            <div class="Workspace-ListStyle"  id="WorkspacePanel_@workspace.Id">
+           
             <div>
                 <div>
                     <a asp-action="ShowWorkspace" asp-controller="Workspace" asp-route-id="@workspace.Id">
@@ -75,13 +112,13 @@
                     </a>
                 </div>
                 <div class="item">
-                    <a asp-action="ShowDeleteWorkspace" asp-controller="Workspace" asp-route-id="@workspace.Id">
+                    <a href="#" name="DeleteWorkspaceButton" onclick="DeleteWorkspace(@workspace.Id)" >
                         <i class="fas fa-trash"></i>Delete
                     </a>
                 </div>
 
             </div>
-        </div>
+         </div>
         }
 
     </div>

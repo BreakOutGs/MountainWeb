@@ -1,0 +1,316 @@
+﻿@model MountainWeb.Models.UserTaskViewModels.EditUserTaskViewModel;
+@using MountainWeb.Data.Entities;
+
+<link href="~/css/MountainStyles.css" rel="stylesheet" />
+
+
+
+
+<h2 style="margin-left:100px">Налаштування</h2>
+<hr>
+<script type="text/javascript" src="~/lib/jquery/dist/jquery.js"></script>
+<script>
+
+
+    var DeleteRemindButton;
+    var CreateRemindButton;
+    var SaveRemindButton;
+
+    var RemindDateTime;
+    var RemindMinuteInterval;
+    var UserTaskId;
+    var RemindList;
+    var RemindButtonsList;
+
+    var CurrentRemindId;
+
+    var RemindsPanel;
+
+    function openTab(evt, tabName) {
+        // Declare all variables
+        var i, tabcontent, tablinks;
+
+        // Get all elements with class="tabcontent" and hide them
+        tabcontent = document.getElementsByClassName("Mountain-tabcontent");
+        for (i = 0; i < tabcontent.length; i++) {
+            tabcontent[i].style.display = "none";
+        }
+
+        // Get all elements with class="tablinks" and remove the class "active"
+        tablinks = document.getElementsByClassName("tablinks");
+        for (i = 0; i < tablinks.length; i++) {
+            tablinks[i].className = tablinks[i].className.replace(" active", "");
+        }
+
+        // Show the current tab, and add an "active" class to the button that opened the tab
+        document.getElementById(tabName).style.display = "block";
+        evt.currentTarget.className += " active";
+    }
+    $(document).ready(function () {
+        console.log("onload..");
+        document.getElementById("defaultOpen").click();
+        DeleteRemindButton = document.getElementById("DeleteRemindButton");
+        CreateRemindButton = document.getElementById("CreateRemindButton");
+        SaveRemindButton = document.getElementById("SaveRemindButton");
+        AddRemindButton = document.getElementById("AddRemindButton");
+        RemindDateTime = document.getElementById("RemindDateTime");
+        RemindMinuteInterval = document.getElementById("RemindMinuteInterval");
+        UserTaskId = document.getElementById("UserTaskId");
+        RemindList = document.getElementsByName("Remind");
+        RemindsPanel = document.getElementById("RemindsPanel");
+        RemindButtonsList = document.getElementsByName("RemindButton");
+
+        DeleteRemindButton.disabled = true;
+        SaveRemindButton.disabled = true;
+
+        RemindDateTime.value = new Date("yyyy-MM-ddThh:mm");
+        currentRemind = 0;
+    })
+
+
+    function CreateRemind() {
+        var rinterval = RemindMinuteInterval.value;
+        var rdatetime = RemindDateTime.value;
+        var taskid = UserTaskId.value;
+        var AddRemindButton;
+          $.ajax({
+                type: "POST",
+                url: "@Url.Action("CreateRemind", "Reminds")",
+              data: { TaskId: taskid, dateTime: rdatetime, minuteinterval: rinterval },
+                dataType: "text",
+              success: function (msg) {
+
+                    console.log("Msg:"+msg);
+                    console.log("Remind was added");
+                    CreateRemindPanel(msg, rdatetime, rinterval);
+                   
+                },
+                error: function (req, status, error) {
+                    console.log(error);
+                }
+            });
+    }
+
+    function DeleteRemindContainer(RemindId) {
+        var Rem = $("input[name='Remind'][value = '"+RemindId+"']");
+        console.log(Rem);
+        CurrentRemindId = 0;    
+        var RemDiv = Rem.parent("div");
+        console.log(RemDiv);
+        console.log(RemindsPanel);
+        RemDiv.empty();
+    }
+
+    function SaveRemind() {
+        var rinterval = RemindMinuteInterval.value;
+        var rdatetime = RemindDateTime.value;
+          $.ajax({
+                type: "POST",
+                url: "@Url.Action("ChangeRemind", "Reminds")",
+              data: { RemindId: CurrentRemindId, dateTime: rdatetime, minuteinterval: rinterval},
+                dataType: "text",
+                success: function (msg) {
+                    console.log("Remind " + CurrentRemindId + " was updated.");
+                    document.getElementById("RemindDatetime_" + CurrentRemindId).value = RemindDateTime.value;
+                    document.getElementById("RemindInterval_" + CurrentRemindId).value = RemindMinuteInterval.value;
+                    SaveRemindButton.disabled = true;
+                    console.log(msg)
+                },
+                error: function (req, status, error) {
+                    console.log(msg);
+                }
+            });
+    }
+    function DeleteRemind() {
+        if (confirm("Ви хочете видалити нагадування?")) {
+          $.ajax({
+                type: "POST",
+                url: "@Url.Action("DeleteRemind", "Reminds")",
+              data: { RemindId: CurrentRemindId },
+                dataType: "text",
+                success: function (msg) {
+                    console.log("Remind " + CurrentRemindId + " was deleted.");
+                    DeleteRemindContainer(CurrentRemindId);
+                    console.log(msg)
+                },
+                error: function (req, status, error) {
+                    console.log(msg);
+                }
+            });
+        }
+
+    }
+
+    function UpdatedRemindFields() {
+        if(CurrentRemindId > 0)
+        SaveRemindButton.disabled = false;
+    }
+
+    function ShowRemindCreation() {
+
+        //TODO: при виборі додавання нагадування, потрібно виділити лише компонент з + і дзвіночком і очистити поля, а також показати лише кнопку "створити"
+        CreateRemindButton.disabled = false;
+        SaveRemindButton.disabled = true;
+        DeleteRemindButton.disabled = true;
+        CurrentRemindId = 0;
+
+        for (var i = 0; i < RemindList.length; i++) {
+
+            var button = RemindButtonsList[i];
+            button.classList.remove("Mountain-ActiveRemind");
+        }
+        AddRemindButton.classList.add("Mountain-ActiveRemind");
+
+        RemindDateTime.value = new Date("yyyy-MM-ddThh:mm");
+        RemindMinuteInterval.value = 0;
+
+    }
+    function ShowRemindChange(RemindId) {
+        CreateRemindButton.style.disabled = true;
+        SaveRemindButton.style.disabled = false;
+        DeleteRemindButton.style.disabled = false;
+        CurrentRemindId = RemindId;
+        AddRemindButton.classList.remove("Mountain-ActiveRemind");
+
+
+        for (var i = 0; i < RemindList.length; i++) {
+            var remind = RemindList[i];
+            var button = RemindButtonsList[i];
+                 button.classList.remove("Mountain-ActiveRemind");
+
+            if (RemindId == remind.value) {
+                button.classList.add("Mountain-ActiveRemind");
+
+                RemindDateTime.value = document.getElementById("RemindDatetime_" + RemindId).value;
+                RemindMinuteInterval.value = document.getElementById("RemindInterval_" + RemindId).value;
+                CreateRemindButton.disabled = true;
+                SaveRemindButton.disabled = false;
+                DeleteRemindButton.disabled = false;
+                //TODO: заповнити поле дати
+                //TODO: заповнити поле повторень
+            }
+         
+        }
+
+    }
+
+    function CreateRemindPanel(id, datetime, minuteinterval) {
+
+        console.log("Creating remind panel in:" + RemindsPanel + "Data: id - " + id + " datetime-" + datetime + " minteval - " + minuteinterval);
+        var newRemPanel = document.createElement("div");
+        newRemPanel.style = "display:inline-block";
+
+        var RemButton = document.createElement("button");
+        RemButton.type = "button";
+        RemButton.addEventListener("click", () => ShowRemindChange(id));
+        RemButton.classList += "Mountain-RemindContainer";
+        RemButton.innerText = document.getElementsByName("Remind").length + "  ";
+        RemButton.name = "RemindButton";
+        newRemPanel.appendChild(RemButton);
+
+        var icon = document.createElement("i");
+        icon.classList += "fas fa-bell";
+        RemButton.appendChild(icon);
+
+
+        var hiddenId = document.createElement("input");
+        hiddenId.type = "hidden";
+        hiddenId.value = id;
+        hiddenId.name = "Remind";
+        newRemPanel.appendChild(hiddenId);
+
+        var hiddenDatetime = document.createElement("input");
+        hiddenDatetime.type = "hidden";
+        hiddenDatetime.value = datetime;
+        hiddenDatetime.id = "RemindDatetime_" + id;
+        newRemPanel.appendChild(hiddenDatetime);
+
+        var hiddenInteval = document.createElement("input");
+        hiddenInteval.type = "hidden";
+        hiddenInteval.value = datetime;
+        hiddenInteval.id = "RemindInterval_" + id;
+        newRemPanel.appendChild(hiddenInteval);
+
+        RemindsPanel.appendChild(newRemPanel);
+    }
+
+</script>
+
+<form asp-action="EditUserTask" onload="init()">
+    <div class="Mountain-Tab">
+        <button type="button" class="tablinks" id="defaultOpen" onclick="openTab(event, 'MainTab')"></button>
+        <button type="button" class="tablinks" onclick="openTab(event, 'RemindsTab')"></button>
+    </div>
+    <div class="Mountain-tabcontent" id="MainTab">
+        <div style="text-align:center;"><h4>Загальне</h4></div>
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <input type="hidden" asp-for="Id" id="UserTaskId"/>
+        <div class="form-group">
+            <label asp-for="Name" class="control-label">Назва</label>
+            <input asp-for="Name" />
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Priority" class="control-label"></label>
+            <br />
+            <input type="range" min="0" max="100" asp-for="Priority" value="@Model.Priority" class="" onchange="display_Priority(this.value)" />
+            <span id="priority_value">@Model.Priority</span>
+            <span asp-validation-for="Priority" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Description" class="control-label">Опис</label>
+            <textarea asp-for="Description" class="form-control" style="width:400px;height:115px"></textarea>
+            <span asp-validation-for="Description" class="text-danger"></span>
+        </div>
+        <div class="form-group form-check">
+            <label class="form-check-label">
+                <input class="form-check-input" asp-for="IsCompleted" /> Виконано
+            </label>
+        </div>
+        <div class="form-group">
+            <input type="submit" value="Збереження" class="btn btn-primary" />
+        </div>
+
+    </div>
+    <div class="Mountain-tabcontent" id="RemindsTab">
+        <div style="text-align:center;"><h4>Нагадування</h4></div>
+        <div>
+            <label>Дата і час:</label>
+            <input type="datetime-local" id="RemindDateTime" onchange="UpdatedRemindFields()">
+        </div>
+       
+        <div class="m-lg-1">
+            <label>Повторення кожних:</label>
+            <input type="number" value="0" id="RemindMinuteInterval" onchange="UpdatedRemindFields()"/>
+              Хвилин
+        </div>
+        
+        <div>
+            <button type="button" id="CreateRemindButton" onclick="CreateRemind()">Створити</button>
+            <button type="button" id="SaveRemindButton" onclick="SaveRemind()">Зберегти</button>
+            <button type="button" id="DeleteRemindButton" onclick="DeleteRemind()">Видалити</button>
+        </div>
+        <div class="Mountain-RemindPanel" id="RemindsPanel">
+            <button type="button" class="Mountain-RemindContainer" id="AddRemindButton" onclick="ShowRemindCreation()">
+                <i class="fas fa-plus"></i>
+                <i class="fas fa-bell"></i>
+            </button>
+            @foreach (Remind remind in Model.Reminds)
+            {
+               <div style="display:inline-block">
+                  <button class="Mountain-RemindContainer" type="button" onclick="ShowRemindChange(@remind.Id)" name="RemindButton">
+                  @Model.Reminds.IndexOf(remind)
+                 <i class="fas fa-bell"></i>
+                 </button> 
+                 <input type="hidden" value="@remind.Id" name="Remind" />
+                 <input type="hidden" id="RemindDatetime_@remind.Id" value="@remind.DateTime.ToString("yyyy-MM-ddThh:mm")" />
+                 <input type="hidden" id="RemindInterval_@remind.Id" value="@remind.MinuteInterval" />
+              </div>
+             
+            }
+        </div>
+    </div>
+
+</form>
+
+

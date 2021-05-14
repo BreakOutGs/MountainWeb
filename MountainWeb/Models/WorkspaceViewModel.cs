@@ -1,9 +1,6 @@
 ﻿using MountainWeb.Data.Entities;
 using MountainWeb.Models.AimViewModels;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace MountainWeb.Models
 {
@@ -20,22 +17,22 @@ namespace MountainWeb.Models
 
         public WorkspaceViewModel(Workspace workspace)
         {
-            if (workspace !=null)
+            if (workspace != null)
             {
                 WorkspaceId = workspace.Id;
                 var aims = workspace.Aims;
                 Aims = new List<ShowAimViewModel>();
-             foreach(var aim in aims)
-                 {
-                     Aims.Add(new ShowAimViewModel(aim));
-                 }
+                foreach (var aim in aims)
+                {
+                    Aims.Add(new ShowAimViewModel(aim));
+                }
             }
             else
             {
                 Aims = new List<ShowAimViewModel>();
             }
-            
-           
+
+
         }
     }
 }

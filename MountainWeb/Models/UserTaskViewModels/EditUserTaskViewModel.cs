@@ -1,8 +1,7 @@
-﻿using System;
+﻿using MountainWeb.Data.Entities;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace MountainWeb.Models.UserTaskViewModels
 {
@@ -18,6 +17,9 @@ namespace MountainWeb.Models.UserTaskViewModels
         [Range(0, 100)]
         public int Priority { get; set; }
 
-        public string AppUseId { get; set; }
+        public string AppUserId { get; set; }
+
+        public List<Remind> Reminds { get; set; }
+        public UserTaskSettings Settings { get; set; }
     }
 }

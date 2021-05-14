@@ -1,8 +1,5 @@
-﻿using System;
+﻿using MountainWeb.Data.Entities;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using MountainWeb.Data.Entities;
 
 namespace MountainWeb.Models.WorkspaceGroup
 {
@@ -13,9 +10,9 @@ namespace MountainWeb.Models.WorkspaceGroup
         public int GetTaskListsCount(Workspace workspace)
         {
             int count = 0;
-            foreach(Aim aim in workspace.Aims)
+            foreach (Aim aim in workspace.Aims)
             {
-                foreach(TaskList list in aim.TaskLists)
+                foreach (TaskList list in aim.TaskLists)
                 {
                     count++;
                 }
@@ -29,12 +26,12 @@ namespace MountainWeb.Models.WorkspaceGroup
             {
                 foreach (TaskList list in aim.TaskLists)
                 {
-                    foreach(UserTask task in list.UserTasks)
-                    count++;
+                    foreach (UserTask task in list.UserTasks)
+                        count++;
                 }
             }
             return count;
         }
 
-    }   
+    }
 }

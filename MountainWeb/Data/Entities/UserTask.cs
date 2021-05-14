@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace MountainWeb.Data.Entities
 {
@@ -14,10 +11,10 @@ namespace MountainWeb.Data.Entities
         [Required]
         public string Name { get; set; }
         public string Description { get; set; }
-        public bool IsCompleted{ get; set; }
+        public bool IsCompleted { get; set; }
 
-        [Range(0,100)]
-        public int  Priority{ get; set; }
+        [Range(0, 100)]
+        public int Priority { get; set; }
 
         public UserTaskSettings Settings { get; set; }
 
@@ -25,5 +22,7 @@ namespace MountainWeb.Data.Entities
         public int TaskListId { get; set; }
 
         public TaskList TaskList { get; set; }
+
+        public List<Remind> Reminds { get; set; }
     }
 }

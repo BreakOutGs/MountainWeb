@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace MountainWeb.Data.Entities
+﻿namespace MountainWeb.Data.Entities
 {
     public class ListEntitySettings
     {
@@ -15,6 +10,6 @@ namespace MountainWeb.Data.Entities
         {
             Expanded = false;
         }
-        
+
     }
 }

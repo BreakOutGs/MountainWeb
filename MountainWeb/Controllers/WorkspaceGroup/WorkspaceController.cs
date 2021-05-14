@@ -1,18 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MountainWeb.Data;
 using MountainWeb.Data.Entities;
 using MountainWeb.Models;
-using MountainWeb.Models.AimViewModels;
-using MountainWeb.Models.TaskListViewModels;
-using MountainWeb.Models.UserTaskViewModels;
 using MountainWeb.Models.WorkspaceGroup;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace MountainWeb.Controllers
 {
@@ -28,7 +22,7 @@ namespace MountainWeb.Controllers
         }
 
         // GET: Workspace
-        public async Task<IActionResult> ShowWorkspace(int id, string SortBy, string SearchText, string UpDown )
+        public async Task<IActionResult> ShowWorkspace(int id, string SortBy, string SearchText, string UpDown)
         {
             WorkspaceViewModel viewModel;
             var user = await _userManager.GetUserAsync(HttpContext.User);
@@ -43,44 +37,44 @@ namespace MountainWeb.Controllers
                 .ThenInclude(aim => aim.TaskLists)
                .ThenInclude(tl => tl.UserTasks)
                .ThenInclude(ut => ut.Settings).FirstAsync();
-          /*  if (SearchText!=""&&SearchText!=" " && SearchText != null)
-            {
-                var _aims = new List<Aim>();
-                bool _AimWithText;
-                foreach(var aim in workspace.Aims)
-                {
-                    _AimWithText = false;
-                    if(aim.Name.Contains(SearchText))
-                    {
-                        _AimWithText = true;
-                        
-                    }
-                    else
-                    {
-                        foreach(TaskList list in aim.TaskLists)
-                        {
-                            if(list.Name.Contains(SearchText))
-                            {
-                                _AimWithText = true;
-                                break;
-                            }
-                            else 
-                                foreach(UserTask task in list.UserTasks)
-                                {
-                                    if (task.Name.Contains(SearchText)) 
-                                    {
-                                        _AimWithText = true;
-                                        break;
-                                    }
-                                }
-                        }
-                    }
-                    if (_AimWithText) _aims.Add(aim);
-                }
-                aims = _aims;
-            } */
+            /*  if (SearchText!=""&&SearchText!=" " && SearchText != null)
+              {
+                  var _aims = new List<Aim>();
+                  bool _AimWithText;
+                  foreach(var aim in workspace.Aims)
+                  {
+                      _AimWithText = false;
+                      if(aim.Name.Contains(SearchText))
+                      {
+                          _AimWithText = true;
+
+                      }
+                      else
+                      {
+                          foreach(TaskList list in aim.TaskLists)
+                          {
+                              if(list.Name.Contains(SearchText))
+                              {
+                                  _AimWithText = true;
+                                  break;
+                              }
+                              else 
+                                  foreach(UserTask task in list.UserTasks)
+                                  {
+                                      if (task.Name.Contains(SearchText)) 
+                                      {
+                                          _AimWithText = true;
+                                          break;
+                                      }
+                                  }
+                          }
+                      }
+                      if (_AimWithText) _aims.Add(aim);
+                  }
+                  aims = _aims;
+              } */
             viewModel = new WorkspaceViewModel(workspace);
-            if (SortBy!=null&SortBy!="Без сортування" && SortBy != "Сортування")
+            if (SortBy != null && SortBy != "Без сортування" && SortBy != "Сортування")
             {
                 switch (SortBy)
                 {
@@ -93,7 +87,7 @@ namespace MountainWeb.Controllers
                         {
                             viewModel.Aims = viewModel.Aims.OrderByDescending(a => a.Name).ToList();
                         }
-                            break;
+                        break;
                     case "Сумарний пріоритет":
                         if (UpDown == "Up")
                         {
@@ -116,7 +110,7 @@ namespace MountainWeb.Controllers
                         break;
                 }
             }
-            return View("Workspace",viewModel);
+            return View("Workspace", viewModel);
         }
 
         // GET: Workspace/Details/5
@@ -145,11 +139,11 @@ namespace MountainWeb.Controllers
             {
                 case "Aim":
                     return RedirectToAction("ChangeAimExpand", "Aim", new { id = ItemId, IsExpanded = Expanded });
-                    break;
+                    
                 case "TaskList":
                     return RedirectToAction("ChangeTaskListExpand", "TaskList", new { id = ItemId, IsExpanded = Expanded });
                     //   RedirectToAction(Url.Action("ChangeTaskListExpand", "TaskList", new { id = ItemId, IsExpanded = Expanded }));
-                    break;
+                    
                 default: return null;
 
             }
@@ -164,10 +158,10 @@ namespace MountainWeb.Controllers
             ChooseWorkspaceMV ViewModel = new ChooseWorkspaceMV() { Workspaces = workspaces };
             return View(ViewModel);
         }
-        public  IActionResult ShowCreateWorkspace(int id)
+        public IActionResult ShowCreateWorkspace(int id)
         {
             CreateVM ViewModel = new CreateVM();
-            return View("Create", ViewModel); 
+            return View("Create", ViewModel);
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -186,7 +180,7 @@ namespace MountainWeb.Controllers
         public IActionResult ShowEditWorkspace(int id)
         {
             Workspace workspace = _context.Workspaces.Where(w => w.Id == id)
-                .Include(w=>w.Settings)
+                .Include(w => w.Settings)
                 .First();
             ChangeWorkspaceVM ViewModel = new ChangeWorkspaceVM(workspace);
             return View("Edit");
@@ -195,13 +189,13 @@ namespace MountainWeb.Controllers
         {
             var user = await _userManager.GetUserAsync(HttpContext.User);
             var workspace = await _context.Workspaces.Where(w => w.Id == changeViewModel.Id).SingleAsync();
-            if(user.Id == workspace.ApplicationUserId)
+            if (user.Id == workspace.ApplicationUserId)
             {
                 workspace.Name = changeViewModel.Name;
                 _context.Workspaces.Update(workspace);
                 await _context.SaveChangesAsync();
             }
-           
+
             return RedirectToAction("Index", "Workspace", "");
         }
         public IActionResult ShowDeleteWorkspace(int id)
@@ -209,22 +203,36 @@ namespace MountainWeb.Controllers
 
             return View();
         }
+        /*  [HttpPost]
+          [ValidateAntiForgeryToken]
+          public async Task<IActionResult> DeleteWorkspace(int id)
+          {
+              var workspace = await _context.Workspaces.SingleAsync(w=>w.Id==id);
+              var user = await _userManager.GetUserAsync(HttpContext.User);
+              if (workspace.ApplicationUserId == user.Id)
+              {
+                  _context.Workspaces.Remove(workspace);
+                  await _context.SaveChangesAsync();
+
+              }
+              return RedirectToAction("Index", "Workspace", "");
+
+          }*/
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteWorkspace(int id)
+
+        public bool DeleteWorkspace(int Id)
         {
-            var workspace = await _context.Workspaces.SingleAsync(w=>w.Id==id);
-            var user = await _userManager.GetUserAsync(HttpContext.User);
-            if (workspace.ApplicationUserId == user.Id)
+            var workspace = _context.Workspaces.Single(w => w.Id == Id);
+            var userId = _userManager.GetUserId(HttpContext.User);
+            if (workspace.ApplicationUserId == userId)
             {
                 _context.Workspaces.Remove(workspace);
-                await _context.SaveChangesAsync();
-                
+                _context.SaveChanges();
+                return false;
             }
-            return RedirectToAction("Index", "Workspace", "");
+            return true;
 
         }
-        // TODO: create Workspace
         // TODO: delete workspace 
 
 

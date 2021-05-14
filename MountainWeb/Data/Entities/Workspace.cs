@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace MountainWeb.Data.Entities
 {
@@ -14,7 +11,7 @@ namespace MountainWeb.Data.Entities
         public string Name { get; set; }
 
         public List<Aim> Aims { get; set; }
-        public WorkspaceSettings Settings {get;set;}
+        public WorkspaceSettings Settings { get; set; }
 
         public string ApplicationUserId { get; set; }
         public ApplicationUser User { get; set; }

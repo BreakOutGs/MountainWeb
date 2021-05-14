@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MountainWeb.Data;
 using MountainWeb.Data.Entities;
 using MountainWeb.Models.AimViewModels;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace MountainWeb.Controllers.WorkspaceGroup
 {
@@ -57,7 +55,7 @@ namespace MountainWeb.Controllers.WorkspaceGroup
                 };
 
                 _context.Aim.Add(aimToAdd);
-               
+
                 _context.EventLogs.Add(new EventLog()
                 {
                     Message = ("User(id: " + user.Id + ", login: " + user.UserName + ") created Aim(id: " + aimToAdd.Id + ", name:" + aimToAdd.Name + ")"),
@@ -190,11 +188,11 @@ namespace MountainWeb.Controllers.WorkspaceGroup
         {
             var user = await _userManager.GetUserAsync(HttpContext.User);
             var aim = await _context.Aim
-                .Include(a=>a.Settings)
+                .Include(a => a.Settings)
                 .Include(aim => aim.TaskLists)
                 .ThenInclude(e => e.UserTasks)
-                .Include(aim=>aim.TaskLists)
-                .ThenInclude(l=>l.Settings)
+                .Include(aim => aim.TaskLists)
+                .ThenInclude(l => l.Settings)
                 .SingleAsync(a => a.Id == id);
             _context.EventLogs.Add(new EventLog()
             {
@@ -211,7 +209,7 @@ namespace MountainWeb.Controllers.WorkspaceGroup
         {
             return _context.Aim.Any(e => e.Id == id);
         }
-        public  void ChangeAimExpand(int id, bool IsExpanded)
+        public void ChangeAimExpand(int id, bool IsExpanded)
         {
 
             var aimSettings = AimSettingsExist(id);

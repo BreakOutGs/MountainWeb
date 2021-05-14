@@ -1,8 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace MountainWeb.Data.Entities
 {
@@ -12,6 +9,6 @@ namespace MountainWeb.Data.Entities
         {
             Workspaces = new List<Workspace>();
         }
-        public ICollection<Workspace> Workspaces  { get; set; }
+        public ICollection<Workspace> Workspaces { get; set; }
     }
 }

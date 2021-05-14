@@ -79,3 +79,88 @@
 .Mountain-WorkspacesToolPanel > div{
     display: inline-block;
 }
+
+.Mountain-tabcontent {
+    width: 500px;
+    min-height: 300px;
+    display:none;
+    /*background: gainsboro;*/
+    margin: 30px;
+    padding: 30px;
+}
+
+.Mountain-tablink + .active {
+    background: white;
+    border: #c6c6c6 6px solid;
+    display: inline-block;
+ }
+.Mountain-Tab {
+    overflow: hidden;
+   
+}
+.Mountain-Tab button {
+    border-radius: 12px;
+    border:none;
+    width: 25px;
+    height: 25px;
+    background: #c6c6c6;
+    display: inline-block;
+    margin-right: 5px;
+}
+.Mountain-Tab button.active {
+    background-color: white;
+    border: 4px solid #c6c6c6;
+}
+    .Mountain-Tab button:focus {
+       outline:none;
+    }
+
+.Mountain-RemindPanel{
+    padding:5px;
+    background: #c6c6c6;
+    border-radius:16px;
+    overflow:scroll;
+    width:500px;
+    height:55px;
+    margin-left:10px;
+    margin-top:20px;
+    display:inline-block;
+    white-space:nowrap;
+}
+.Mountain-RemindContainer {
+    border: 1px solid #000000;
+    border-radius: 12px;
+    width: 50px;
+    height:30px;
+    display: inline-block;
+    padding-left: 5px;
+    background-color: white;
+    margin-right: 5px;
+}
+.Mountain-RemindContainer:active{
+    border-radius:12px;
+    
+}
+.Mountain-ActiveRemind {
+    border: 2px solid #007bff;
+}
+/* width */
+::-webkit-scrollbar {
+    width: 10px;
+    height:13px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: #888;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}

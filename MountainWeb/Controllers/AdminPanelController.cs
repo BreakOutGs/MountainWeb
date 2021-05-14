@@ -1,14 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using MountainWeb.Data;
 using MountainWeb.Data.Entities;
 using MountainWeb.Models.EventLogViewModels;
 using MountainWeb.Models.RoleViewModels;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace MountainWeb.Controllers
 {
@@ -33,7 +33,7 @@ namespace MountainWeb.Controllers
 
         public IActionResult ShowRolesList()
         {
-            return View("Roles/RolesList",_roleManager.Roles.ToList());
+            return View("Roles/RolesList", _roleManager.Roles.ToList());
         }
 
         public IActionResult Create() => View("Roles/Create");
@@ -58,84 +58,86 @@ namespace MountainWeb.Controllers
             }
             return View(name);
         }
-    
-    [HttpPost]
-    public async Task<IActionResult> Delete(string id)
-    {
-        IdentityRole role = await _roleManager.FindByIdAsync(id);
-        if (role != null)
-        {
-            IdentityResult result = await _roleManager.DeleteAsync(role);
-        }
-        return RedirectToAction("Index");
-    }
 
-    public IActionResult UserList() => View(_userManager.Users.ToList());
-
-    public async Task<IActionResult> Edit(string userId)
-    {
-        // получаем пользователя
-        var user = await _userManager.FindByIdAsync(userId);
-        if (user != null)
+        [HttpPost]
+        public async Task<IActionResult> Delete(string id)
         {
-            // получем список ролей пользователя
-            var userRoles = await _userManager.GetRolesAsync(user);
-            var allRoles = _roleManager.Roles.ToList();
-            ChangeRoleViewModel model = new ChangeRoleViewModel
+            IdentityRole role = await _roleManager.FindByIdAsync(id);
+            if (role != null)
             {
-                UserId = user.Id,
-                UserEmail = user.Email,
-                UserRoles = userRoles,
-                AllRoles = allRoles
-            };
-            return View("Roles/Edit",model);
+                IdentityResult result = await _roleManager.DeleteAsync(role);
+            }
+            return RedirectToAction("Index");
         }
 
-        return NotFound();
-    }
-    [HttpPost]
-    public async Task<IActionResult> Edit(string userId, List<string> roles)
-    {
-        // получаем пользователя
-        var user = await _userManager.FindByIdAsync(userId);
-        if (user != null)
+        public IActionResult UserList() => View(_userManager.Users.ToList());
+
+        public async Task<IActionResult> Edit(string userId)
         {
-            // получем список ролей пользователя
-            var userRoles = await _userManager.GetRolesAsync(user);
-            // получаем все роли
-            var allRoles = _roleManager.Roles.ToList();
-            // получаем список ролей, которые были добавлены
-            var addedRoles = roles.Except(userRoles);
-            // получаем роли, которые были удалены
-            var removedRoles = userRoles.Except(roles);
+            // получаем пользователя
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user != null)
+            {
+                // получем список ролей пользователя
+                var userRoles = await _userManager.GetRolesAsync(user);
+                var allRoles = _roleManager.Roles.ToList();
+                ChangeRoleViewModel model = new ChangeRoleViewModel
+                {
+                    UserId = user.Id,
+                    UserEmail = user.Email,
+                    UserRoles = userRoles,
+                    AllRoles = allRoles
+                };
+                return View("Roles/Edit", model);
+            }
 
-            await _userManager.AddToRolesAsync(user, addedRoles);
-
-            await _userManager.RemoveFromRolesAsync(user, removedRoles);
-
-            return RedirectToAction("UserList");
+            return NotFound();
         }
+        [HttpPost]
+        public async Task<IActionResult> Edit(string userId, List<string> roles)
+        {
+            // получаем пользователя
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user != null)
+            {
+                // получем список ролей пользователя
+                var userRoles = await _userManager.GetRolesAsync(user);
+                // получаем все роли
+                var allRoles = _roleManager.Roles.ToList();
+                // получаем список ролей, которые были добавлены
+                var addedRoles = roles.Except(userRoles);
+                // получаем роли, которые были удалены
+                var removedRoles = userRoles.Except(roles);
 
-        return NotFound();
-    }
-        public IActionResult ShowEventLogList(string EventType=null, string EventSearchString = null)
+                await _userManager.AddToRolesAsync(user, addedRoles);
+
+                await _userManager.RemoveFromRolesAsync(user, removedRoles);
+
+                return RedirectToAction("UserList");
+            }
+
+            return NotFound();
+        }
+        public IActionResult ShowEventLogList(string EventType = null, string EventSearchString = null)
         {
             ICollection<ShowEventLogViewModel> logsViewModel = new List<ShowEventLogViewModel>();
             List<EventLog> _logs;
-            if (EventType != null && EventType!="Всі")
+            if (EventType != null && EventType != "Всі")
             {
-                 _logs = _context.EventLogs.Where(l=>l.EventType == (EventTypes)Enum.Parse(typeof(EventTypes), EventType)).ToList();
+                _logs = _context.EventLogs.Where(l => l.EventType == (EventTypes)Enum.Parse(typeof(EventTypes), EventType)).ToList();
                 ViewData["EventType"] = EventType;
             }
-            else { _logs = _context.EventLogs.ToList();
+            else
+            {
+                _logs = _context.EventLogs.ToList();
                 ViewData["EventType"] = "Всі";
             }
             if (EventSearchString != null) _logs = _logs.Where(l => l.Message.Contains(EventSearchString)).ToList();
             _logs.Reverse();
             foreach (var log in _logs) logsViewModel.Add(new ShowEventLogViewModel(log));
-        
+
             return View("EventLogs/EventLogsList", logsViewModel);
         }
-}
+    }
 }
 

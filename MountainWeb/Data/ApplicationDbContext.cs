@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using MountainWeb.Data.Entities;
-using MountainWeb.Models;
-using MountainWeb.Models.UserTaskViewModels;
-using MountainWeb.Models.WorkspaceGroup;
 
 namespace MountainWeb.Data
 {
@@ -24,7 +18,7 @@ namespace MountainWeb.Data
         public DbSet<MountainWeb.Data.Entities.Aim> Aim { get; set; }
         public DbSet<MountainWeb.Data.Entities.AimSettings> AimSettings { get; set; }
 
-        public DbSet<MountainWeb.Data.Entities.TaskList> TaskList  { get; set; }
+        public DbSet<MountainWeb.Data.Entities.TaskList> TaskList { get; set; }
         public DbSet<MountainWeb.Data.Entities.TaskListSettings> TaskListSettings { get; set; }
 
         public DbSet<MountainWeb.Data.Entities.UserTask> UserTask { get; set; }
@@ -34,7 +28,9 @@ namespace MountainWeb.Data
 
         public DbSet<MountainWeb.Models.WorkspaceGroup.ChangeWorkspaceVM> ChangeWorkspaceVM { get; set; }
 
+        public DbSet<MountainWeb.Data.Entities.Remind> Reminds { get; set; }
 
-        
+
+
     }
 }

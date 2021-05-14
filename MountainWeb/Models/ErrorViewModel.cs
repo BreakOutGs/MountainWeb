@@ -1,5 +1,3 @@
-using System;
-
 namespace MountainWeb.Models
 {
     public class ErrorViewModel

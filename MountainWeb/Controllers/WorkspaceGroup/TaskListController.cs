@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MountainWeb.Data;
 using MountainWeb.Data.Entities;
 using MountainWeb.Models.TaskListViewModels;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace MountainWeb.Controllers.WorkspaceGroup
 {
@@ -173,7 +171,7 @@ namespace MountainWeb.Controllers.WorkspaceGroup
         public async Task<IActionResult> DeleteTaskListConfirmed(int id)
         {
             var user = await _userManager.GetUserAsync(HttpContext.User);
-            var list = await _context.TaskList.Include(l => l.UserTasks).Include(l=>l.Settings).SingleAsync(l => l.Id == id);
+            var list = await _context.TaskList.Include(l => l.UserTasks).Include(l => l.Settings).SingleAsync(l => l.Id == id);
             _context.TaskListSettings.Remove(list.Settings);
             _context.TaskList.Remove(list);
             _context.EventLogs.Add(new EventLog()
@@ -189,14 +187,14 @@ namespace MountainWeb.Controllers.WorkspaceGroup
         {
             return _context.TaskList.Any(e => e.Id == id);
         }
-         public void ChangeTaskListExpand(int id, bool IsExpanded)
+        public void ChangeTaskListExpand(int id, bool IsExpanded)
         {
             var taskListSettings = _context.TaskListSettings.First(s => s.TaskListId == id);
             taskListSettings.Expanded = IsExpanded;
             _context.Update(taskListSettings);
             _context.SaveChanges();
         }
-      
+
         public TaskListSettings TaskListSettingsIsExistOrCreate(int listId)
         {
             if (!_context.TaskListSettings.Any(s => s.TaskListId == listId))
@@ -207,7 +205,7 @@ namespace MountainWeb.Controllers.WorkspaceGroup
                     TaskList = list,
                     TaskListId = list.Id
                 };
-               
+
                 _context.TaskListSettings.Add(list.Settings);
                 _context.TaskList.Update(list);
                 _context.SaveChanges();
