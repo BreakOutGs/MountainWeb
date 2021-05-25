@@ -49,3 +49,75 @@
 .ToolsPanel{
     padding: 8px;
 }
+
+.M-AimPanel {
+    border: 1px solid;
+    border-radius: 12px;
+    text-align: center;
+    margin: 8px;
+    display: block;
+}
+.M-AimPanel > button{
+    background:white;
+    border:none;
+    float:left;
+    margin:3px;
+}
+.M-TaskListPanel{
+
+}
+.M-UserTaskPanel{
+
+}
+.M-PageFragment{
+    border: 2px solid #c6c6c6;
+    border-radius:6px;
+    padding:2px;
+    display:inline-block;
+    overflow:auto;
+    margin:15px;
+}
+.M-ListContainer{
+    overflow-y:scroll;
+    display:block;
+}
+
+::-webkit-scrollbar {
+    width: 10px;
+    height: 13px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: #888;
+}
+
+    /* Handle on hover */
+    ::-webkit-scrollbar-thumb:hover {
+        background: #555;
+    }
+
+.M-ProgressBar {
+    border: none;
+    background-color: rgba(31,85,223,0.25);
+    height:100%;
+    position: absolute;
+    z-index: -1px;
+    border-radius: 6px;
+}
+
+.M-HButton{
+    background: none;
+    border:none;
+}
+.M-HButton:focus{
+    outline: none;
+}
+.M-HButton > i{
+    display:block;
+}

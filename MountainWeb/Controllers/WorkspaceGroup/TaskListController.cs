@@ -144,6 +144,7 @@ namespace MountainWeb.Controllers.WorkspaceGroup
             }
             var user = await _userManager.GetUserAsync(HttpContext.User);
             var list = await _context.TaskList.Include(l => l.Aim)
+                .ThenInclude(a=>a.Workspace)
                 .FirstOrDefaultAsync(m => m.Id == id);
 
 

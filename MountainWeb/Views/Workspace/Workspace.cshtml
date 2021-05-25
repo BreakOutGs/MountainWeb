@@ -41,25 +41,11 @@
         });
         })
     });
-    $(document).ready(function () {
-        $("#UpDownButton").click(function () {
-
-            if (this.innerHTML.includes("up-alt")) {
-                this.innerHTML = "<i class='fas fa-sort-amount-down-alt' style='margin-left:4px'></i>";
-                $(this).parent(document).children("#UpDownValue").val("Down");
-
-            }
-            else {
-                this.innerHTML = "<i class='fas fa-sort-amount-up-alt' style='margin-left:4px'></i>";
-                $(this).parent(document).children("#UpDownValue").val("Up");
-
-            }
-
-        })
-    });
+   
 </script>
 <ul class="list-group-horizontal list-unstyled border ToolsPanel">
-    <li> <a asp-controller="Aim" asp-action="CreateAim" asp-route-id="@Model.WorkspaceId">Створити ціль</a></li>
+    <li style="display:inline;"><a asp-controller="Workspace" asp-action="ExitFromWorkspace">Вийти з категорії</a></li>
+    <li style="display:inline;"> <a asp-controller="Aim" asp-action="CreateAim" asp-route-id="@Model.WorkspaceId">Створити ціль</a></li>
 </ul>
 <form class="m-2">
     <input name="SearchText" placeholder="Введіть текст" style="width:300px" />

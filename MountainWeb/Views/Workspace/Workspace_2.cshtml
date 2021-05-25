@@ -1,0 +1,219 @@
+﻿@model MountainWeb.Models.WorkspaceViewModel
+@using MountainWeb.Models.AimViewModels;
+@using MountainWeb.Models;
+
+<link rel="stylesheet" href="~/Recources/WorkSpaceStyles.css" />
+<link rel="stylesheet" href="~/css/Workspace/UserTaskPanelStyles.css" />
+<link rel="stylesheet" href="~/css/Workspace/TaskListStyles.css" />
+<link href="~/css/MountainStyles.css" rel="stylesheet" />
+
+
+<script type="text/javascript" src="~/lib/jquery/dist/jquery.js"></script>
+
+<script type="text/javascript">
+
+     $(document).ready(function () {
+         $(".TaskListExpandButton").click(function () {
+             console.log(this);
+             var inputInside = $(this).parent("div").children("input[name='IsExpanded']");
+             var iconInside = $(this).children("i")[0];
+             var Container = $(this).parent("div").parent("div").children(".TaskContainer")[0];
+
+             console.log(inputInside.attr("value"));
+             console.log(Container);
+
+             if (inputInside.attr("value") == "false") {
+                 isExpanded = true;
+             }
+             else {
+                 isExpanded = false;
+             }
+             console.log(isExpanded);
+
+             _position = this.id.indexOf("_") + 1;
+             _itemType = this.id.substr(0, _position - 1);
+             _itemId = this.id.substr(_position, this.id.length - _position);
+
+             $.ajax({
+                 type: "POST",
+                 url: "@Url.Action("ChangeExpand","Workspace")",
+                 data: { ItemId: _itemId, ItemType: _itemType, Expanded: isExpanded },
+                 dataType: "text",
+                 success: function () {
+                    
+                     if (isExpanded == true) {
+                         console.log("Expand changed to true");
+                         inputInside.attr("value", "true");
+                         iconInside.classList.remove('fa-caret-left');
+                         iconInside.classList.add('fa-caret-down');
+                         Container.style.display = "block";
+                     }
+                     else {
+                         console.log("Expand changed to false");
+                         inputInside.attr("value", "false");
+                         iconInside.classList.remove('fa-caret-down');
+                         iconInside.classList.add('fa-caret-left');
+                         Container.style.display = "none";
+                     }
+                 },
+                 error: function (req, status, error) {
+                     console.log(error);
+                 }
+             });
+         });
+        
+         window.addEventListener("click", function () {
+             $(".Mountain-WsContMenu").removeClass("Mountain-WsContActive");
+         });
+
+         $(".Mountain-ContextMenuButton").click(function (event) {
+                 event.stopPropagation();
+                 $(".Mountain-WsContMenu").removeClass("Mountain-WsContActive");
+                 $(this).parent("div").children(".Mountain-WsContMenu").addClass("Mountain-WsContActive");
+
+                 var x = this.offsetLeft + 20;
+                 var y = this.offsetTop;
+                 $(this).parent("div").children(".Mountain-WsContMenu").css({ left: x, top: y });
+         });
+
+         var FirstAimPanel = document.getElementsByName("AimPanels")[0];
+         var FirstAimButtonPanel = document.getElementsByName("AimsButtons")[0];
+         FirstAimPanel.style.display = "block";
+         FirstAimButtonPanel.classList.add("M-ActivePanel");
+     });
+    function showAimsPanel(id) {
+        var list = document.getElementsByName("AimPanels");
+        var list2 = document.getElementsByName("AimsButtons");
+        var AimsPanelId = "AimPanel_" + id;
+        list.forEach(aim => {
+            aim.style.display = "none";
+            if (aim.id == AimsPanelId) aim.style.display = "block";
+        });
+        list2.forEach(aim => {
+            aim.classList.remove("M-ActivePanel");
+            if (aim.id == AimsPanelId) aim.classList.add("M-ActivePanel");
+        });
+    }
+
+</script>
+
+
+<div style="height:800px">
+    <div style="width:90%">
+        <a asp-controller="Workspace" asp-action="ExitFromWorkspace"><i class="fa fa-long-arrow-alt-left"></i> Повернутись</a>
+        <span style="margin-left:25%; font-size:24px">@Model.Name</span>
+    </div>
+    <div class="M-PageFragment" style="width:78%; height:40px">
+        <div class="M-toolbarItem">
+            <a asp-action="CreateAim" asp-controller="Aim" asp-route-id="@Model.WorkspaceId"><i class="fas fa-plus"></i></a>
+        </div>
+    </div>
+    <div style="height:500px">
+        <div class="M-PageFragment" style="width:25%; height:500px">
+            <span style="margin-left:45%">Цілі</span>
+            <div class="M-ListContainer" style="height:80%">
+                @foreach (var aim in @Model.Aims)
+                {
+                <div class="M-AimPanel" name="AimsButtons" id="AimPanel_@aim.Id">
+                    <button class="M-HButton" type="button" onclick="showAimsPanel(@aim.Id)">
+                        <i class=" fas fa-play" style="display:block;"></i>
+                    </button>
+                    <span>@aim.Name</span>
+                    <button class="M-HButton Mountain-ContextMenuButton" style="float:right; margin:5px; margin-right:10px;" type="button">
+                        <i class="fas fa-ellipsis-v"></i>
+                    </button>
+                    <div class="Mountain-WsContMenu">
+                        <div class="item">
+                            <a asp-action="CreateTaskList" asp-controller="TaskList" asp-route-id="@aim.Id">
+                                <i class="fas fa-edit"></i>Створити список
+                            </a>
+                        </div>
+                        <div class="item">
+                            <a asp-action="EditAim" asp-controller="Aim" asp-route-id="@aim.Id">
+                                <i class="fas fa-edit"></i>Редагувати
+                            </a>
+                        </div>
+                        <div class="item">
+                            <a asp-action="DeleteAim" asp-controller="Aim" asp-route-id="@aim.Id">
+                                <i class="fas fa-edit"></i>Видалити
+                            </a>
+                        </div>
+                    </div>
+                  
+                 </div>   
+                 }
+                
+                </div>
+            </div>
+        <div class="M-PageFragment" style="width:50%; height:500px">
+
+            @foreach (var aim in Model.Aims)
+            {
+                <div style="height:100%; overflow-y:scroll; display:none;"  name="AimPanels" id="AimPanel_@aim.Id">
+                    <div style="width:100%; text-align:center;"> <span>@aim.Name</span></div>
+
+                    @foreach (var tasklist in aim.TaskLists)
+                    {
+                        <div class="TaskListContainer">
+                            <div class="TaskListPanel">
+                                <div class="TasksProgressBar"></div>
+                                <input type="hidden" value="@tasklist.Settings.Expanded.ToString().ToLower()" name="IsExpanded" />
+                                <button class="TaskListExpandButton M-HButton" type="button" id="TaskList_@tasklist.Id">
+
+                                    <i class="@Model.getExpandedIcon(tasklist.Settings.Expanded)" style="display:block;font-size:24px"></i>
+                                </button>
+                                <span class="TaskListColor"></span>
+                                <span class="TaskListName">@tasklist.Name</span>
+                                <button class="TaskListMenuButton M-HButton Mountain-ContextMenuButton" type="button"><i class="fas fa-ellipsis-v"></i></button>
+                                <div class="Mountain-WsContMenu">
+                                    <div class="item">
+                                        <a asp-action="CreateUserTask" asp-controller="UserTask" asp-route-id="@tasklist.Id">
+                                            <i class="fas fa-edit"></i>Створити ціль
+                                        </a>
+                                    </div>
+                                    <div class="item">
+                                        <a asp-action="EditTaskList" asp-controller="Tasklist" asp-route-id="@tasklist.Id">
+                                            <i class="fas fa-edit"></i>Редагувати
+                                        </a>
+                                    </div>
+                                    <div class="item">
+                                        <a asp-action="DeleteTaskList" asp-controller="Tasklist" asp-route-id="@tasklist.Id">
+                                            <i class="fas fa-edit"></i>Видалити
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="TaskContainer" style="@Model.getStyleForContainer(tasklist.Settings.Expanded)">
+                                @foreach (var task in tasklist.UserTasks)
+                                {
+                                    <div class="UserTaskPanel" style="border-left-color:@UserTaskColorsHelper.GetColorByPriority(task.Priority);
+                                         border-right-color:@UserTaskColorsHelper.GetColorByPriority(task.Priority)">
+                                        <input type="hidden" value="" />
+                                            <input id="TaskCompleted_@task.Id" style="display:inline; margin-left:5px;" type="checkbox" value="@task.IsCompleted"/>
+
+                                        <span class="UserTaskName">@task.Name</span>
+                                        <button class="UserTaskMenuButton M-HButton Mountain-ContextMenuButton" type="button"><i class="fas fa-ellipsis-v"></i></button>
+                                        <div class="Mountain-WsContMenu">
+                                            <div class="item">
+                                                <a asp-action="EditUserTask" asp-controller="UserTask" asp-route-id="@task.Id">
+                                                    <i class="fas fa-edit"></i>Редагувати
+                                                </a>
+                                            </div>
+                                            <div class="item">
+                                                <a asp-action="DeleteUserTask" asp-controller="UserTask" asp-route-id="@task.Id">
+                                                    <i class="fas fa-edit"></i>Видалити
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+
+    </div>
+
+</div>

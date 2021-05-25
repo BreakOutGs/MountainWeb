@@ -2,6 +2,32 @@
 @using MountainWeb.Data.Entities;
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
+
+    <script type="text/javascript" src="~/lib/jquery/dist/jquery.js"></script>
+<script>
+    var RemindList;
+    function getReminds(){
+        $.ajax({
+            type: "Post",
+            url: "@Url.Action("GetReminds", "Reminds")",
+            data: {},
+            dataType: "json",
+            success: function (msg) {
+
+                RemindList = msg;
+
+                console.log(msg);
+            },
+            error: function (req, status, error) {
+                console.log(error);
+            }
+        });
+    }
+    $(document).ready(function(){
+      
+    });
+</script>
+
 <ul class="navbar-nav">
     @if (User.IsInRole("Admin"))
     {
@@ -12,25 +38,38 @@
     @if (SignInManager.IsSignedIn(User))
     {
 
-        <li class="nav-item">
+        <li class="nav-item M-navbaritem">
             <a class="nav-link text-dark" asp-area="" asp-controller="Workspace" asp-action="Index">Робоче місце</a>
         </li>
-        <li class="nav-item">
+        <li class="nav-item M-navbaritem">
             <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Профіль</a>
         </li>
-        <li class="nav-item">
+        <li class="nav-item M-navbaritem">
             <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
                 <button type="submit" class="nav-link btn btn-link text-dark">Вийти</button>
             </form>
         </li>
+      
+
+
     }
     else
     {
-        <li class="nav-item">
+        <li class="nav-item M-navbaritem">
             <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Register">Реєстрація</a>
         </li>
-        <li class="nav-item">
+        <li class="nav-item M-navbaritem">
             <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Login">Вхід</a>
         </li>
     }
 </ul>
+<div style="display:none" class="RemindTabs">
+    <button type="button" onclick="OpenTab('PastRemind')" id="DefaultTab">Сповіщення</button>
+    <button type="button">Очікується</button>
+    <div id="PastReminds" class="Mountain-RemTabContent">
+        
+    </div>
+    <div id="FutureReminds" class="Mountain-RemTabContent">
+         
+    </div>
+</div>

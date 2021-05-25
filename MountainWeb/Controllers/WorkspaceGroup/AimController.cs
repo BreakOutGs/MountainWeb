@@ -85,7 +85,9 @@ namespace MountainWeb.Controllers.WorkspaceGroup
                 return NotFound();
             }
             var user = await _userManager.GetUserAsync(HttpContext.User);
-            var aim = await _context.Aim.FindAsync(id);
+            var aim = await _context.Aim
+                .Include(a=>a.Workspace)
+                .SingleAsync(aim=>aim.Id==id);
             EditAimViewModel editAimViewModel = new EditAimViewModel()
             {
                 Id = aim.Id,
@@ -160,6 +162,7 @@ namespace MountainWeb.Controllers.WorkspaceGroup
             }
             var user = await _userManager.GetUserAsync(HttpContext.User);
             var aim = await _context.Aim
+                .Include(a=>a.Workspace)
                 .FirstOrDefaultAsync(m => m.Id == id);
 
 

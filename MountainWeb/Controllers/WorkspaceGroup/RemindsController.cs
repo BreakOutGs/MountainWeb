@@ -5,6 +5,7 @@ using MountainWeb.Data;
 using MountainWeb.Data.Entities;
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace MountainWeb.Controllers.WorkspaceGroup
 {
@@ -57,5 +58,17 @@ namespace MountainWeb.Controllers.WorkspaceGroup
             _context.SaveChanges();
             return true;
         }
+
+
+        [HttpPost]
+        public  JsonResult GetReminds()
+        {
+            var userId = _userManager.GetUserId(User);
+            var l =  _context.Reminds.Where(r => r.Id == int.Parse(userId)).ToList();
+
+            var data2send = Json(l); ;
+            return data2send;
+        }
+
     }
 }

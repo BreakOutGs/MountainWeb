@@ -40,12 +40,13 @@
     transform: scale(1);
     transition: transform 300ms ease-in-out;
 }
-
+#d6b603
+#df8916 hover 
 .Mountain-WsContMenu .item {
     padding: 8px 10px;
     font-size: 15px;
     color: #eee;
-    display:block;
+    display: block;
 }
 .Mountain-WsContMenu .item:hover {
     background: #555;
@@ -136,6 +137,7 @@
     padding-left: 5px;
     background-color: white;
     margin-right: 5px;
+   
 }
 .Mountain-RemindContainer:active{
     border-radius:12px;
@@ -163,4 +165,23 @@
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
     background: #555;
+}
+
+.Mountain-RemTabContent{
+
+}
+
+.M-toolbarItem {
+    display: inline-block;
+    margin: 4px;
+    border: antiquewhite;
+    width: 25px;
+    text-align: center;
+}
+    .M-toolbarItem > a {
+        color: #dee110;
+    }
+.M-ActivePanel{
+    border-left:3px solid yellow;
+    margin-left:12px;
 }

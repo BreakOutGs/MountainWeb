@@ -10,5 +10,6 @@ namespace MountainWeb.Data.Entities
             Workspaces = new List<Workspace>();
         }
         public ICollection<Workspace> Workspaces { get; set; }
+        public int CurrentWorkspaceId { get; set; }
     }
 }

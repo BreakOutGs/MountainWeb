@@ -11,6 +11,7 @@ namespace MountainWeb.Models
         public Dictionary<bool, string> listExpandedStyle { get; private set; } = new Dictionary<bool, string> { { false, "Mactivedrop" }, { true, "" } };
 
         public int WorkspaceId { get; set; }
+        public string Name { get; set; }
 
 
         public ICollection<ShowAimViewModel> Aims { get; set; }
@@ -22,6 +23,7 @@ namespace MountainWeb.Models
                 WorkspaceId = workspace.Id;
                 var aims = workspace.Aims;
                 Aims = new List<ShowAimViewModel>();
+                Name = workspace.Name;
                 foreach (var aim in aims)
                 {
                     Aims.Add(new ShowAimViewModel(aim));
@@ -33,6 +35,24 @@ namespace MountainWeb.Models
             }
 
 
+        }
+        public  string getExpandedIcon(bool isExpanded)
+        {
+            if (isExpanded)
+            {
+                return "fas fa-caret-down";
+            }
+            else return "fas fa-caret-left";
+        }
+        public  string getStyleForContainer(bool isExpanded)
+        {
+            if (isExpanded)
+            {
+                return "display:block;";
+            }
+
+                return "display:none;";
+           
         }
     }
 }

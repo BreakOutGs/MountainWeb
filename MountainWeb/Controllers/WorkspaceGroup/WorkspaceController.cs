@@ -5,6 +5,7 @@ using MountainWeb.Data;
 using MountainWeb.Data.Entities;
 using MountainWeb.Models;
 using MountainWeb.Models.WorkspaceGroup;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -36,7 +37,10 @@ namespace MountainWeb.Controllers
                 .Include(wspace => wspace.Aims)
                 .ThenInclude(aim => aim.TaskLists)
                .ThenInclude(tl => tl.UserTasks)
-               .ThenInclude(ut => ut.Settings).FirstAsync();
+               .ThenInclude(ut => ut.Settings)
+               .FirstAsync();
+            user.CurrentWorkspaceId = workspace.Id;
+            _context.SaveChanges();
             /*  if (SearchText!=""&&SearchText!=" " && SearchText != null)
               {
                   var _aims = new List<Aim>();
@@ -110,7 +114,7 @@ namespace MountainWeb.Controllers
                         break;
                 }
             }
-            return View("Workspace", viewModel);
+            return View("Workspace_2", viewModel);
         }
 
         // GET: Workspace/Details/5
@@ -154,7 +158,11 @@ namespace MountainWeb.Controllers
         public async Task<IActionResult> Index()
         {
             var user = await _userManager.GetUserAsync(HttpContext.User);
+            if (user.CurrentWorkspaceId>0) {
+                return RedirectToAction("ShowWorkspace", new { Id = user.CurrentWorkspaceId });
+            }
             var workspaces = await _context.Workspaces.Where(ws => ws.ApplicationUserId == user.Id).ToListAsync();
+           
             ChooseWorkspaceMV ViewModel = new ChooseWorkspaceMV() { Workspaces = workspaces };
             return View(ViewModel);
         }
@@ -219,7 +227,6 @@ namespace MountainWeb.Controllers
 
           }*/
         [HttpPost]
-
         public bool DeleteWorkspace(int Id)
         {
             var workspace = _context.Workspaces.Single(w => w.Id == Id);
@@ -233,9 +240,13 @@ namespace MountainWeb.Controllers
             return true;
 
         }
-        // TODO: delete workspace 
 
-
-
+        public IActionResult ExitFromWorkspace()
+        {
+            var user = _context.Users.Single(user => user.Id == _userManager.GetUserId(HttpContext.User));
+            user.CurrentWorkspaceId = 0;
+            _context.SaveChanges();
+           return RedirectToAction("Index");
+        }
     }
 }
