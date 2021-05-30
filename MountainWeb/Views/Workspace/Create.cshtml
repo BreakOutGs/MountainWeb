@@ -1,26 +1,17 @@
 ﻿@model MountainWeb.Models.WorkspaceGroup.CreateVM
 
-<div>
+<div class="row" style="justify-content:center;">
     <form asp-action="CreateWorkspace" asp-controller="Workspace">
         <h2 class="text-center">Створення</h2>
-        <h5 class="text-center">Робочого місця</h5>
+        <h5 class="text-center">Категорії</h5>
 
-        <div>
-            <div class="text-center">
-                <div class="d-inline-block">
-                    <label asp-for="Name"   class="custom-control-label">Назва:</label>
-                    <input asp-for="Name" class="form-control" />
-                    <span asp-validation-for="Name" class="text-danger"></span>
-                </div>
-                
-
-            </div>
+        <div class="form-group">
+            <label asp-for="Name" class="control-label">Назва:</label>
+            <input asp-for="Name" class="form-control" />
+            <span asp-validation-for="Name" class="text-danger"></span>
         </div>
-
-
-        <div>
-            <div class="text-md-center"></div>
-            <button >Створити</button>
+        <div class="form-group">
+            <input type="submit" value="Створити" class="btn btn-primary" />
         </div>
     </form>
 </div>

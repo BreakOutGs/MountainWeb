@@ -29,30 +29,30 @@
 .Mountain-WsContMenu {
     position: fixed;
     z-index: 10000;
-    width: 150px;
-    background: #1b1a1a;
+    padding: 10px;
+    background: #c6c6c6;
     border-radius: 5px;
     transform: scale(0);
     transform-origin: top left;
+    text-align: center;
 }
 
 .Mountain-WsContActive {
     transform: scale(1);
     transition: transform 300ms ease-in-out;
 }
-#d6b603
-#df8916 hover 
+
 .Mountain-WsContMenu .item {
-    padding: 8px 10px;
+    padding: 10px;
     font-size: 15px;
     color: #eee;
     display: block;
 }
 .Mountain-WsContMenu .item:hover {
-    background: #555;
+    background: #ffdf60;
 }
 .Mountain-WsContMenu a{
-    display:block
+    display:block;
 }
 .Mountain-WsContMenu .item > a > i {
     display: inline-block;

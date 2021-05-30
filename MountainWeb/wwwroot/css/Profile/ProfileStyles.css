@@ -1,0 +1,50 @@
+﻿
+.M-ProfileAvatar {
+    display: inline-block;
+    height: 150px;
+    width: 150px;
+    float: left;
+}
+.M-ProfInfoContainer{
+    margin:20px;
+    display:inline-block;
+}
+.M-ProfInfoContainer div{
+    display:block;
+    margin:5px;
+}
+
+.M-Menu1Button {
+    margin: 5px;
+    background: #e4e4e4;
+    border: 2px solid white;
+    border-radius: 9px;
+    display: block;
+    padding:5px;
+    text-align:center
+}
+.M-Menu1Button:hover{
+    border: 2px solid yellow;
+}
+.M-M1Active {
+    border-left: none;
+    border-right: none;
+    border-top: 2px solid black;
+    border-bottom: 2px solid black;
+    outline:none;
+}
+.M-TabConent{
+    padding:20px;
+    display:none;
+}
+.M-InfoBlock{
+    margin:10px;
+    display:block;
+}
+.M-ProfileIcon {
+    width: 25px;
+    height: 25px;
+    border-radius: 30px;
+    border: 2px solid;
+    background: #222222
+}

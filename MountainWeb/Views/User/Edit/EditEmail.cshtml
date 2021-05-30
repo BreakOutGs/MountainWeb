@@ -1,0 +1,25 @@
+﻿@model MountainWeb.Models.AppUser.Edit.EditEmailVM
+
+<link rel="stylesheet" href="~/Recources/WorkSpaceStyles.css" />
+<link rel="stylesheet" href="~/css/Profile/ProfileStyles.css" />
+<link href="~/css/MountainStyles.css" rel="stylesheet" />
+
+
+<div class="M-PageFragment" style="height:500px;">
+    <a class="M-Menu1Button" name="Tab" asp-action="EditProfileInfo" asp-controller="User">Дані профілю</a>
+    <a class="M-Menu1Button" name="Tab" asp-action="EditPassword" asp-controller="User">Зміна паролю</a>
+    <a class="M-Menu1Button  M-M1Active" name="Tab" asp-action="EditEmail" asp-controller="User">Зміна пошти</a>
+    <a class="M-Menu1Button" name="Tab" asp-action="EditAvatar" asp-controller="User">Зміна аватарки</a>
+</div>
+<div class="M-PageFragment" style="height:500px;width:600px;">
+    <form asp-action="ChangeEmail" asp-controller="User" method="post">
+        <div class="form-group">
+            <label asp-for="Email"></label>
+            <input asp-for="Email" class="form-control" />
+            <span asp-validation-for="Email" class="text-danger"></span>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Зберегти</button>
+    </form>
+
+</div>

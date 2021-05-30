@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -25,9 +26,7 @@ namespace MountainWeb
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
-            //  services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
-            //        .AddRoles<IdentityRole>()
-            //    .AddEntityFrameworkStores<ApplicationDbContext>();
+          
             services.AddIdentity<ApplicationUser, IdentityRole>()
         .AddRoleManager<RoleManager<IdentityRole>>()
         .AddDefaultUI()
@@ -36,6 +35,7 @@ namespace MountainWeb
 
             services.AddControllersWithViews();
             services.AddRazorPages();
+           
             services.Configure<IdentityOptions>(options =>
             {
                 options.Password.RequireDigit = true;

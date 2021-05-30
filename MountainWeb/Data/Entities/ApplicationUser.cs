@@ -10,6 +10,8 @@ namespace MountainWeb.Data.Entities
             Workspaces = new List<Workspace>();
         }
         public ICollection<Workspace> Workspaces { get; set; }
+        public string AvatarPath { get; set; } = "default.png";
+
         public int CurrentWorkspaceId { get; set; }
     }
 }

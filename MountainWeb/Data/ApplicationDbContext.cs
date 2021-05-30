@@ -11,6 +11,8 @@ namespace MountainWeb.Data
         {
         }
 
+        public DbSet<MountainWeb.Data.Entities.ApplicationUser> ApplicationUsers { get; set; }
+
         public DbSet<MountainWeb.Data.Entities.Workspace> Workspaces { get; set; }
         public DbSet<MountainWeb.Data.Entities.WorkspaceSettings> WorkspaceSettings { get; set; }
 

@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
+using MimeKit;
 using MountainWeb.Data.Entities;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -87,7 +88,21 @@ namespace MountainWeb.Areas.Identity.Pages.Account
                         pageHandler: null,
                         values: new { area = "Identity", userId = user.Id, code = code, returnUrl = returnUrl },
                         protocol: Request.Scheme);
-
+                    MimeMessage message = new MimeMessage();
+                    message.From.Add(new MailboxAddress("Mountain", "mountainweb2021@gmail.com"));
+                    message.To.Add(new MailboxAddress(name: user.UserName, address: user.Email));
+                    message.Subject = "Password recovery from Mountain";
+                    message.Body = new TextPart(MimeKit.Text.TextFormat.Html)
+                    {
+                        Text = $"Відновіть свій пароль натиснувши <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>сюди</a>."
+                    };
+                    using (MailKit.Net.Smtp.SmtpClient client = new MailKit.Net.Smtp.SmtpClient())
+                    {
+                        client.Connect("smtp.gmail.com", 465, true);
+                        client.Authenticate("mountainweb2021@gmail.com", "Upalid15_norma5");
+                        client.Send(message);
+                        client.Disconnect(true);
+                    }
                     await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
                         $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
 
@@ -110,5 +125,7 @@ namespace MountainWeb.Areas.Identity.Pages.Account
             // If we got this far, something failed, redisplay form
             return Page();
         }
+       
     }
+   
 }

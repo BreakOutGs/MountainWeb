@@ -61,25 +61,25 @@
 
 <div>
     <div class="Mountain-PageName">
-        <h3>Робочі місця</h3>
+        <h3>Категорії</h3>
     </div>
   
     <div class="Mountain-WorkspacesToolPanel">
         <a asp-action="ShowCreateWorkspace" asp-controller="Workspace" style="font-size:larger">
         <i class="fas fa-plus-square" style="color:black"></i>
         </a>
-        <div  style="margin-left: 150px;">
-            <input type="text" placeholder="Введіть текст для пошуку.." />
-            <button type="button"><i class="fas fa-search"></i></button>
-            <button type="button"><i class="fas fa-filter"></i></button>
+        <div  style="margin-left: 10%;">
+            <input type="text" placeholder="Введіть текст для пошуку.." style="width:300px;" />
+            <button class="M-HButton" type="button"><i class="fas fa-search"></i></button>
+            <button class="M-HButton" type="button"><i class="fas fa-filter"></i></button>
         </div>
         
-        <div style="float:right;">
-        <button>
+        <div style="float:right; margin:5px;">
+        <button class="M-HButton" style="background: #e0e1f9; height: 25px;">
             <i class="fas fa-list"></i>
         </button>
         |
-        <button>
+        <button class="M-HButton" style="height: 25px;">
             <i class="fas fa-th"></i>
             </button>
         </div>
@@ -92,7 +92,7 @@
             <div>
                 <div>
                     <a asp-action="ShowWorkspace" asp-controller="Workspace" asp-route-id="@workspace.Id">
-                        <i class="fas fa-play" style="color:black; margin-left:5px; margin-right:5px"></i>
+                        <i class="fas fa-list-alt" style="color:#ceaa26; margin-left:5px; margin-right:5px"></i>
                     </a>
                 </div>
                 <div>@workspace.Aims.Count A</div>
@@ -104,7 +104,10 @@
             </div>
 
 
-            <a class="Mountain-ContextMenuButton"><i class="fas fa-ellipsis-v"></i> </a>
+            <button class="M-HButton Mountain-ContextMenuButton" style="float:right;margin:3px;">
+                <i class="fas fa-ellipsis-v"></i> 
+            </button>
+
             <div class="Mountain-WsContMenu" id="ContextMenu @workspace.Id">
                 <div class="item">
                     <a asp-action="ShowEditWorkspace" asp-controller="Workspace" asp-route-id="@workspace.Id">

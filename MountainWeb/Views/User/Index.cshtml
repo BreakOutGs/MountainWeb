@@ -1,0 +1,40 @@
+﻿@model MountainWeb.Models.AppUser.IndexVM
+
+    <link rel="stylesheet" href="~/Recources/WorkSpaceStyles.css" />
+    <link rel="stylesheet" href="~/css/Profile/ProfileStyles.css" />
+    <link href="~/css/MountainStyles.css" rel="stylesheet" />
+    
+    <div>
+
+        <div>
+
+            @if (Model.AvatarPath != "" && Model.AvatarPath != null)
+            {
+                <img class="M-ProfileAvatar" src="~/uploads/avatar/@Model.AvatarPath" />
+            }
+            else
+            {
+                <img class="M-ProfileAvatar" style="display:inline-block;" src="~/Recources/Images/Avatars/default.png" />
+            }
+        </div>
+        <div class="M-ProfInfoContainer">
+            <div style="display:block;">
+                <span>Ім'я:</span>
+                <span>@Model.Name</span>
+                <a class="M-HButton text-dark" asp-action="EditProfile" asp-controller="User" type="button"><i class="fas fa-cog" style="font-size:18px;"></i></a>
+            </div>
+            <div style="display:block;">
+                <span>Пошта:</span>
+                <span>@Model.Email</span>
+                @if (Model.EmailConfirmed){
+                    <i style="color:green" class="fas fa-check"></i>
+                }
+                else { 
+                    <i style="color:aliceblue" class="fas fa-question"></i>
+                }
+            </div>
+
+
+        </div>
+        <hr style="margin-top:70px" />
+    </div>

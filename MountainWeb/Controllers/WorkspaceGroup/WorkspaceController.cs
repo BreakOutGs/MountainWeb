@@ -243,7 +243,7 @@ namespace MountainWeb.Controllers
 
         public IActionResult ExitFromWorkspace()
         {
-            var user = _context.Users.Single(user => user.Id == _userManager.GetUserId(HttpContext.User));
+            var user = _context.ApplicationUsers.Single(user => user.Id == _userManager.GetUserId(HttpContext.User));
             user.CurrentWorkspaceId = 0;
             _context.SaveChanges();
            return RedirectToAction("Index");

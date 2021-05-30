@@ -1,9 +1,11 @@
 ﻿@using Microsoft.AspNetCore.Identity
 @using MountainWeb.Data.Entities;
+@using MountainWeb.Data;
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
+@inject ApplicationDbContext _context
 
-    <script type="text/javascript" src="~/lib/jquery/dist/jquery.js"></script>
+<script type="text/javascript" src="~/lib/jquery/dist/jquery.js"></script>
 <script>
     var RemindList;
     function getReminds(){
@@ -24,7 +26,19 @@
         });
     }
     $(document).ready(function(){
-      
+       
+            window.addEventListener("click", function () {
+                $("#ProfileMenu").removeClass("Mountain-WsContActive");
+            });
+            $("#ProfileMenuButton").click(function (event) {
+                event.stopPropagation();
+                $(".Mountain-WsContMenu").removeClass("Mountain-WsContActive");
+                $("#ProfileMenu").addClass("Mountain-WsContActive");
+
+                var x = this.offsetLeft + 20;
+                var y = this.offsetTop+35;
+                $("#ProfileMenu").css({ left: x, top: y });
+            });
     });
 </script>
 
@@ -41,15 +55,30 @@
         <li class="nav-item M-navbaritem">
             <a class="nav-link text-dark" asp-area="" asp-controller="Workspace" asp-action="Index">Робоче місце</a>
         </li>
-        <li class="nav-item M-navbaritem">
-            <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Профіль</a>
-        </li>
-        <li class="nav-item M-navbaritem">
-            <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
-                <button type="submit" class="nav-link btn btn-link text-dark">Вийти</button>
-            </form>
+        <li>
+            <div>
+                <button class="fa-stack M-HButton Mountain-ContextMenuButton" style="color:black" id="ProfileMenuButton">
+                    <img src="~/uploads/avatar/@_context.Users.Single(u=>u.Id==UserManager.GetUserId(User)).AvatarPath" class="M-ProfileIcon" />
+                    <i class="fas fa-sort-down"></i>
+                </button>
+                <div class="Mountain-WsContMenu" id="ProfileMenu">
+
+                    <div class="item">
+                        <a class="" asp-action="Index" asp-controller="User">Профіль</a>
+                    </div>
+
+                    <div class="item">
+                        <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+                            <button type="submit" class="btn btn-link">Вийти</button>
+                        </form>
+                    </div>
+
+                </div>
+            </div>
         </li>
       
+       
+
 
 
     }
@@ -67,9 +96,9 @@
     <button type="button" onclick="OpenTab('PastRemind')" id="DefaultTab">Сповіщення</button>
     <button type="button">Очікується</button>
     <div id="PastReminds" class="Mountain-RemTabContent">
-        
+
     </div>
     <div id="FutureReminds" class="Mountain-RemTabContent">
-         
+
     </div>
 </div>

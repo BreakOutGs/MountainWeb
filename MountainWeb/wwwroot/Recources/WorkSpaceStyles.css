@@ -63,19 +63,15 @@
     float:left;
     margin:3px;
 }
-.M-TaskListPanel{
 
-}
-.M-UserTaskPanel{
-
-}
-.M-PageFragment{
-    border: 2px solid #c6c6c6;
-    border-radius:6px;
-    padding:2px;
-    display:inline-block;
-    overflow:auto;
-    margin:15px;
+.M-PageFragment {
+    /*  border: 2px solid #c6c6c6;*/
+    border-radius: 6px;
+    padding: 10px;
+    display: inline-block;
+    overflow: auto;
+    margin: 15px;
+    background: #eeeeeb17;
 }
 .M-ListContainer{
     overflow-y:scroll;
@@ -121,3 +117,44 @@
 .M-HButton > i{
     display:block;
 }
+
+.M-AContainer {
+    border: 1px solid;
+    border-left: 2px solid yellow;
+    min-width: 20px;
+    border-right: 2px solid yellow;
+    background: #fcfca7;
+    height: 23px;
+    display: inline-block;
+    text-align: center;
+    border-radius: 9px;
+    margin-left: 3px;
+    margin-right: 3px;
+}
+.M-TLcontainer {
+    border: 1px solid;
+    border-left: 2px solid yellow;
+    min-width: 20px;
+    border-right: 2px solid yellow;
+    background: #fcfca7;
+    height: 23px;
+    display: inline-block;
+    text-align: center;
+    border-radius: 9px;
+    margin-left: 3px;
+    margin-right: 3px;
+}
+.M-UTcontainer {
+    border: 1px solid;
+    border-left: 2px solid yellow;
+    min-width: 20px;
+    border-right: 2px solid yellow;
+    background: #fcfca7;
+    height: 23px;
+    display: inline-block;
+    text-align: center;
+    border-radius: 9px;
+    margin-left: 3px;
+    margin-right: 3px;
+}
+
