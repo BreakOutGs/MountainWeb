@@ -40,7 +40,7 @@
                  data: { ItemId: _itemId, ItemType: _itemType, Expanded: isExpanded },
                  dataType: "text",
                  success: function () {
-                    
+
                      if (isExpanded == true) {
                          console.log("Expand changed to true");
                          inputInside.attr("value", "true");
@@ -61,7 +61,7 @@
                  }
              });
          });
-        
+
          window.addEventListener("click", function () {
              $(".Mountain-WsContMenu").removeClass("Mountain-WsContActive");
          });
@@ -94,7 +94,38 @@
             if (aim.id == AimsPanelId) aim.classList.add("M-ActivePanel");
         });
     }
-
+    function ChamgeUTaskCompleted(UTaskId) {
+       
+        var TaskCompletedInput = document.getElementById("TaskCompleted_" + UTaskId);
+        var IsTaskCompleted = TaskCompletedInput.checked;
+        console.log(IsTaskCompleted);
+        console.log(TaskCompletedInput);
+        $.ajax({
+                 type: "POST",
+                 url: "@Url.Action("ChangeTaskCompleted", "UserTask")",
+            data: { id: UTaskId, isCompleted: IsTaskCompleted},
+                 dataType: "text",
+                 success: function (msg) {
+                     if (msg == "false") {
+                         if (TaskCompletedInput.checked == "true") {
+                             TaskCompletedInput.checked = "false";
+                         }
+                         else {
+                             TaskCompletedInput.checked = "true";
+                         }
+                     }
+                 },
+                 error: function (req, status, error) {
+                     console.log(error);
+                     if (TaskCompletedInput.checked == "true") {
+                         TaskCompletedInput.checked = "false";
+                     }
+                     else {
+                         TaskCompletedInput.checked = "true";
+                     }
+                 }
+             });
+    }
 </script>
 
 
@@ -189,7 +220,7 @@
                                     <div class="UserTaskPanel" style="border-left-color:@UserTaskColorsHelper.GetColorByPriority(task.Priority);
                                          border-right-color:@UserTaskColorsHelper.GetColorByPriority(task.Priority)">
                                         <input type="hidden" value="" />
-                                            <input id="TaskCompleted_@task.Id" style="display:inline; margin-left:5px;" type="checkbox" value="@task.IsCompleted"/>
+                                            <input id="TaskCompleted_@task.Id" style="display:inline; margin-left:5px;" type="checkbox" checked="@task.IsCompleted" onchange="ChamgeUTaskCompleted(@task.Id)"/>
 
                                         <span class="UserTaskName">@task.Name</span>
                                         <button class="UserTaskMenuButton M-HButton Mountain-ContextMenuButton" type="button"><i class="fas fa-ellipsis-v"></i></button>

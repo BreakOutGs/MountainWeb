@@ -30,7 +30,8 @@ namespace MountainWeb.Controllers.WorkspaceGroup
                 Task = task,
                 TaskId = TaskId,
                 DateTime = dateTime,
-                MinuteInterval = minuteinterval
+                MinuteInterval = minuteinterval,
+                TaskName = task.Name
             };
             task.Reminds.Add(remind);
             _context.Reminds.Add(remind);
@@ -64,9 +65,10 @@ namespace MountainWeb.Controllers.WorkspaceGroup
         public  JsonResult GetReminds()
         {
             var userId = _userManager.GetUserId(User);
-            var l =  _context.Reminds.Where(r => r.Id == int.Parse(userId)).ToList();
+            var l = _context.Reminds.Where(r => r.Task.TaskList.Aim.Workspace.ApplicationUserId == userId)
+                .ToList();
 
-            var data2send = Json(l); ;
+            var data2send = Json(l);
             return data2send;
         }
 

@@ -3,13 +3,15 @@
     background-color:white;
     border: 1px #c9c9c9 solid
 }
-.Workspace-ListStyle{
-    border: #000000 2px solid;
+.Workspace-ListStyle {
+    border: #ffb145 2px solid;
+    border-top: 2px solid #dfdede;
+    border-bottom: 2px solid #dfdede;
     border-radius: 6px;
-    width:600px;
-    height:30px;
-    margin:10px;
-    padding-top:2px;
+    width: 600px;
+    height: 30px;
+    margin: 10px;
+    padding-top: 2px;
 }
 .Workspace-ListStyle > div{
     display:inline-block;
@@ -184,4 +186,42 @@
 .M-ActivePanel{
     border-left:3px solid yellow;
     margin-left:12px;
+}
+
+.M-RemsContainer {
+    display: none;
+    position: absolute;
+    background: #FBDF71;
+    padding: 10px;
+    height: 400px;
+    width:300px;
+    border: 2px solid #A08000;
+}
+.M-RemsTab {
+    background: white;
+    width: 130px;
+    border: 1px solid;
+}
+    .M-RTActive {
+        background: #f6c500;
+        border: 1px solid #f6c500;
+    }
+.M-RemsTabContent {
+    overflow-y: scroll;
+    display:none;
+    height: 340px;
+    margin-top: 10px;
+    background: #FBD53F;
+}
+.M-RemItem {
+    border-top: 2px solid black;
+    border-bottom: 1px solid black;
+    margin: 5px;
+    background: #ffdd5f;
+}
+.M-RemName {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    width: 170px;
 }

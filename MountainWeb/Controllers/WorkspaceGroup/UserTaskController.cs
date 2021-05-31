@@ -219,14 +219,17 @@ namespace MountainWeb.Controllers.WorkspaceGroup
             return _context.UserTask.Any(e => e.Id == id);
         }
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<bool> ChangeTaskCompleted(int id)
+        public async Task<bool> ChangeTaskCompleted(int id, bool isCompleted)
         {
             if (!UserTaskExist(id)) return false;
             var user = await _userManager.GetUserAsync(HttpContext.User);
-            var userTask = await _context.UserTask.Include(t => t.TaskList).ThenInclude(l => l.Aim).SingleAsync(t => t.Id == id);
+            var userTask = await _context.UserTask
+                .Include(t => t.TaskList)
+                .ThenInclude(l => l.Aim)
+                .ThenInclude(a=>a.Workspace)
+                .SingleAsync(t => t.Id == id);
             if (user.Id != userTask.TaskList.Aim.Workspace.ApplicationUserId) return false;
-            userTask.IsCompleted = !userTask.IsCompleted;
+            userTask.IsCompleted = isCompleted;
             try
             {
                 _context.Update(userTask);

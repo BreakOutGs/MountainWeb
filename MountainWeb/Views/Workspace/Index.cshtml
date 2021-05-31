@@ -59,7 +59,7 @@
 
 </script>
 
-<div>
+<div style="display: flex; flex-wrap: wrap; justify-content: center;">
     <div class="Mountain-PageName">
         <h3>Категорії</h3>
     </div>
@@ -68,7 +68,7 @@
         <a asp-action="ShowCreateWorkspace" asp-controller="Workspace" style="font-size:larger">
         <i class="fas fa-plus-square" style="color:black"></i>
         </a>
-        <div  style="margin-left: 10%;">
+        <div  style="margin-left: 10%;display:none;">
             <input type="text" placeholder="Введіть текст для пошуку.." style="width:300px;" />
             <button class="M-HButton" type="button"><i class="fas fa-search"></i></button>
             <button class="M-HButton" type="button"><i class="fas fa-filter"></i></button>
@@ -92,12 +92,12 @@
             <div>
                 <div>
                     <a asp-action="ShowWorkspace" asp-controller="Workspace" asp-route-id="@workspace.Id">
-                        <i class="fas fa-list-alt" style="color:#ceaa26; margin-left:5px; margin-right:5px"></i>
+                        <i class="fas fa-list-alt" style="color:#ceaa26; margin-left:5px; margin-right:5px; font-size: 18px;"></i>
                     </a>
                 </div>
-                <div>@workspace.Aims.Count A</div>
-                <div>@Model.GetTaskListsCount(workspace) TL</div>
-                <div>@Model.GetTasksCount(workspace) UT</div>
+                <div class="M-AContainer">@workspace.Aims.Count</div>
+                <div class="M-TLContainer">@Model.GetTaskListsCount(workspace)</div>
+                <div class="M-UTContainer">@Model.GetTasksCount(workspace)</div>
             </div>
             <div class="Workspace-name">
                 @workspace.Name

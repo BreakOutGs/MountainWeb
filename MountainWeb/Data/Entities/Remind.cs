@@ -17,8 +17,11 @@ namespace MountainWeb.Data.Entities
         public int MinuteInterval { get; set; }
         bool isRepeatable;
 
-        public UserTask Task { get; set; }
+        public UserTask Task {
+            get; set;
+        }
         public int TaskId { get; set; }
+        public string TaskName { get; set; }
 
 
 

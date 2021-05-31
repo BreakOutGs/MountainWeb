@@ -123,7 +123,7 @@
     border-left: 2px solid yellow;
     min-width: 20px;
     border-right: 2px solid yellow;
-    background: #fcfca7;
+    background: #fcd2a7;
     height: 23px;
     display: inline-block;
     text-align: center;
@@ -131,7 +131,7 @@
     margin-left: 3px;
     margin-right: 3px;
 }
-.M-TLcontainer {
+.M-TLContainer {
     border: 1px solid;
     border-left: 2px solid yellow;
     min-width: 20px;
@@ -144,12 +144,12 @@
     margin-left: 3px;
     margin-right: 3px;
 }
-.M-UTcontainer {
+.M-UTContainer {
     border: 1px solid;
-    border-left: 2px solid yellow;
+    border-left: 2px solid #dee4ff;
     min-width: 20px;
-    border-right: 2px solid yellow;
-    background: #fcfca7;
+    border-right: 2px solid #dee4ff;
+    background: #a7cdfc;
     height: 23px;
     display: inline-block;
     text-align: center;

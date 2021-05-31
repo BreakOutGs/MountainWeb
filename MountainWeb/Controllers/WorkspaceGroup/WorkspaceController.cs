@@ -161,7 +161,11 @@ namespace MountainWeb.Controllers
             if (user.CurrentWorkspaceId>0) {
                 return RedirectToAction("ShowWorkspace", new { Id = user.CurrentWorkspaceId });
             }
-            var workspaces = await _context.Workspaces.Where(ws => ws.ApplicationUserId == user.Id).ToListAsync();
+            var workspaces = await _context.Workspaces.Where(ws => ws.ApplicationUserId == user.Id)
+                .Include(ws=>ws.Aims)
+                .ThenInclude(a=>a.TaskLists)
+                .ThenInclude(a=>a.UserTasks)
+                .ToListAsync();
            
             ChooseWorkspaceMV ViewModel = new ChooseWorkspaceMV() { Workspaces = workspaces };
             return View(ViewModel);

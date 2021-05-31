@@ -54,5 +54,13 @@ namespace MountainWeb.Models
                 return "display:none;";
            
         }
+        public string getCheckedByBool(bool B)
+        {
+            if (B)
+            {
+                return "checked";
+            }
+            else return "";
+        }
     }
 }

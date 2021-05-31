@@ -7,8 +7,16 @@
 
 <script type="text/javascript" src="~/lib/jquery/dist/jquery.js"></script>
 <script>
-    var RemindList;
-    function getReminds(){
+
+    var RemindsContainer;
+    var ShowRemindButton;
+    var PastRemsTab;
+    var FutureRemsTab;
+    var PastTabButton;
+    var FutureTabButton;
+    var RemContVisible;
+    var RemindsDataList;
+    function getRemindsData(){
         $.ajax({
             type: "Post",
             url: "@Url.Action("GetReminds", "Reminds")",
@@ -16,8 +24,16 @@
             dataType: "json",
             success: function (msg) {
 
-                RemindList = msg;
+                RemindsDataList = msg;
+                var today = new Date();
+                RemindsDataList.forEach(rem => {
+                    if (true) {
+                        FutureRemsTab.appendChild(CreateRemItem(rem));
+                    }
+                    else {
 
+                    }
+                })
                 console.log(msg);
             },
             error: function (req, status, error) {
@@ -25,8 +41,19 @@
             }
         });
     }
-    $(document).ready(function(){
-       
+    $(document).ready(function () {
+
+        RemindsContainer = document.getElementById("RemindsContainer");
+        ShowRemindButton = document.getElementById("ShowRemindButton");
+        RemContVisible = false;
+        PastRemsTab = document.getElementById("PastReminds");
+        FutureRemsTab = document.getElementById("FutureReminds");
+
+        PastTabButton = document.getElementById("PastTabButton");
+        FutureTabButton = document.getElementById("FutureTabButton");
+        ShowFutureRemTab();
+        getRemindsData();
+
             window.addEventListener("click", function () {
                 $("#ProfileMenu").removeClass("Mountain-WsContActive");
             });
@@ -36,10 +63,67 @@
                 $("#ProfileMenu").addClass("Mountain-WsContActive");
 
                 var x = this.offsetLeft + 20;
-                var y = this.offsetTop+35;
+                var y = this.offsetTop+20;
                 $("#ProfileMenu").css({ left: x, top: y });
             });
     });
+    function ShowRemindsList() {
+        if (!RemContVisible) {
+            RemindsContainer.style.display = "block";
+            RemindsContainer.style.left = ShowRemindButton.style.left;
+            RemindsContainer.style.top = "70px";
+            RemContVisible = true;
+        }
+        else {
+            RemindsContainer.style.display = "none";
+            RemContVisible = false;
+        }
+       
+    }
+    function ShowPastRemTab() {
+
+        FutureRemsTab.style.display = "none";
+        FutureTabButton.classList.remove("M-RTActive");
+
+        PastRemsTab.style.display = "block";
+        PastTabButton.classList.add("M-RTActive");
+
+    }
+    function ShowFutureRemTab() {
+
+        PastRemsTab.style.display = "none";
+        PastTabButton.classList.remove("M-RTActive");
+
+        FutureRemsTab.style.display = "block";
+        FutureTabButton.classList.add("M-RTActive");
+    }
+    function CreateRemItem(Remind){
+
+        var RemindDiv = document.createElement("div");
+        RemindDiv.classList.add("M-RemItem");
+       
+        var RemName = document.createElement("div");
+        RemName.innerHTML = Remind.taskName;
+        RemName.classList.add("M-RemName");
+        RemName.style.display = "inline-block";
+
+        var RemTime = document.createElement("div");
+        RemTime.style.display = "inline";
+
+        var RemCheck = document.createElement("button");
+        RemCheck.classList.add("M-HButton");
+        RemCheck.style.display = "inline";
+        var CheckIcon = document.createElement("i");
+        CheckIcon.classList.add("fas");
+        CheckIcon.classList.add("fa-check");
+        RemCheck.appendChild(CheckIcon);
+
+        RemindDiv.appendChild(RemTime);
+        RemindDiv.appendChild(RemName);
+        RemindDiv.appendChild(RemCheck);
+
+        return RemindDiv;
+    }
 </script>
 
 <ul class="navbar-nav">
@@ -54,6 +138,11 @@
 
         <li class="nav-item M-navbaritem">
             <a class="nav-link text-dark" asp-area="" asp-controller="Workspace" asp-action="Index">Робоче місце</a>
+        </li>
+        <li>
+            <button class="M-HButton" style="margin:20px;" type="button" id="ShowRemindButton" onclick="ShowRemindsList()">
+                <i class="fas fa-bell"></i>
+            </button>
         </li>
         <li>
             <div>
@@ -92,13 +181,15 @@
         </li>
     }
 </ul>
-<div style="display:none" class="RemindTabs">
-    <button type="button" onclick="OpenTab('PastRemind')" id="DefaultTab">Сповіщення</button>
-    <button type="button">Очікується</button>
-    <div id="PastReminds" class="Mountain-RemTabContent">
-
+<div style="display:none" class="M-RemsContainer" id="RemindsContainer">
+    <div>
+        <button type="button" onclick="ShowPastRemTab()" id="PastTabButton" class="M-RemsTab active">Сповіщення</button>
+        <button type="button" onclick="ShowFutureRemTab()" id="FutureTabButton" class="M-RemsTab active">Очікується</button>
     </div>
-    <div id="FutureReminds" class="Mountain-RemTabContent">
+    <div id="PastReminds" class="M-RemsTabContent">
+       <div>Нагадування №1</div>
+    </div>
+    <div id="FutureReminds" class="M-RemsTabContent">
 
     </div>
 </div>

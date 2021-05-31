@@ -61,7 +61,7 @@ namespace MountainWeb.Areas.Identity.Pages.Account
                 message.Subject = "Password recovery from Mountain";
                 message.Body = new TextPart(MimeKit.Text.TextFormat.Html)
                 {
-                    Text = $"Відновіть свій пароль натиснувши <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>сюди</a>."
+                    Text = $"Відновіть свій пароль натиснувши на <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>це посилання</a>."
                 };
                 using (MailKit.Net.Smtp.SmtpClient client = new MailKit.Net.Smtp.SmtpClient())
                 {
