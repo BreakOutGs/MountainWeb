@@ -23,18 +23,28 @@
             data: {},
             dataType: "json",
             success: function (msg) {
-
+                console.log(msg);
                 RemindsDataList = msg;
                 var today = new Date();
-                RemindsDataList.forEach(rem => {
-                    if (true) {
-                        FutureRemsTab.appendChild(CreateRemItem(rem));
+                var tempDayName;
+                for (var i = 0; i < RemindsDataList.length; i++) {
+                    if (getDateDiffFromNowInDays(RemindsDataList[i].dateTime) >= 0) {
+                        if (tempDayName == null || tempDayName != getNormalizedDataday(RemindsDataList[i].dateTime)) {
+                            FutureRemsTab.appendChild(CreateRemDayName(getNormalizedDataday(RemindsDataList[i].dateTime)));
+                            tempDayName = getNormalizedDataday(RemindsDataList[i].dateTime);
+                        }
+                        FutureRemsTab.appendChild(CreateRemItem(RemindsDataList[i]));
                     }
                     else {
-
+                        if (tempDayName == null || tempDayName != getNormalizedDataday(RemindsDataList[i].dateTime)) {
+                            PastRemsTab.appendChild(CreateRemDayName(getNormalizedDataday(RemindsDataList[i].dateTime)));
+                            tempDayName = getNormalizedDataday(RemindsDataList[i].dateTime);
+                        }
+                        PastRemsTab.appendChild(CreateRemItem(RemindsDataList[i]));
                     }
-                })
-                console.log(msg);
+                    
+                }
+
             },
             error: function (req, status, error) {
                 console.log(error);
@@ -78,7 +88,7 @@
             RemindsContainer.style.display = "none";
             RemContVisible = false;
         }
-       
+
     }
     function ShowPastRemTab() {
 
@@ -101,7 +111,7 @@
 
         var RemindDiv = document.createElement("div");
         RemindDiv.classList.add("M-RemItem");
-       
+
         var RemName = document.createElement("div");
         RemName.innerHTML = Remind.taskName;
         RemName.classList.add("M-RemName");
@@ -109,6 +119,15 @@
 
         var RemTime = document.createElement("div");
         RemTime.style.display = "inline";
+        RemTime.style.fontWeight = "600";
+
+        var date = new Date(Remind.dateTime);
+
+        var hours = date.getHours();
+        var minutes = date.getMinutes();
+        var str = getNormalizedMoH(hours) + ":" + getNormalizedMoH(minutes);
+        console.log(str);
+        RemTime.innerHTML = str;
 
         var RemCheck = document.createElement("button");
         RemCheck.classList.add("M-HButton");
@@ -123,6 +142,35 @@
         RemindDiv.appendChild(RemCheck);
 
         return RemindDiv;
+    }
+    function CreateRemDayName(DayName) {
+        var NameSpan = document.createElement("span");
+        NameSpan.innerHTML = DayName;
+        NameSpan.classList.add("M-DayName");
+
+        return NameSpan;
+    }
+    function getNormalizedMoH(MoH) {
+        if (MoH < 10) {
+            return "0" + MoH;
+        }
+        else return MoH;
+    }
+    function getDateDiffFromNowInDays(date) {
+        var tempData = new Date(date);
+        var now = new Date();
+        var diff = (tempData.getTime() - now.getTime()) / (1000 * 3600 * 24);
+        return diff;
+    }
+    function getNormalizedDataday(date) {
+        var NormalizedDate = new Date(date);
+        var diff = getDateDiffFromNowInDays(date);
+        if (diff >= 0 && diff < 1) {
+            return "Сьогодні";
+        }
+        if (diff >= -1 && diff < 0) return "Вчора";
+        if (diff >= 1 && diff < 2) return "Завтра";
+        return getNormalizedMoH(NormalizedDate.getDate()) + "." + getNormalizedMoH(NormalizedDate.getMonth());
     }
 </script>
 
@@ -187,7 +235,7 @@
         <button type="button" onclick="ShowFutureRemTab()" id="FutureTabButton" class="M-RemsTab active">Очікується</button>
     </div>
     <div id="PastReminds" class="M-RemsTabContent">
-       <div>Нагадування №1</div>
+
     </div>
     <div id="FutureReminds" class="M-RemsTabContent">
 

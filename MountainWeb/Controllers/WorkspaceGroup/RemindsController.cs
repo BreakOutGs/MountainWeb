@@ -66,7 +66,7 @@ namespace MountainWeb.Controllers.WorkspaceGroup
         {
             var userId = _userManager.GetUserId(User);
             var l = _context.Reminds.Where(r => r.Task.TaskList.Aim.Workspace.ApplicationUserId == userId)
-                .ToList();
+                .ToList().OrderBy(rem => rem.DateTime);
 
             var data2send = Json(l);
             return data2send;

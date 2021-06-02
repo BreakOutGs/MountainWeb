@@ -176,13 +176,17 @@
 .M-toolbarItem {
     display: inline-block;
     margin: 4px;
-    border: antiquewhite;
+    border: 3px solid  antiquewhite;
     width: 25px;
     text-align: center;
 }
     .M-toolbarItem > a {
         color: #dee110;
     }
+.M-toolbarItem:hover {
+    border: 3px solid #d4d4d4;
+    border-radius: 2px;
+}
 .M-ActivePanel{
     border-left:3px solid yellow;
     margin-left:12px;
@@ -217,6 +221,7 @@
     border-top: 2px solid black;
     border-bottom: 1px solid black;
     margin: 5px;
+    padding: 5px;
     background: #ffdd5f;
 }
 .M-RemName {
@@ -224,4 +229,11 @@
     white-space: nowrap;
     text-overflow: ellipsis;
     width: 170px;
+    margin: -5px;
+    margin-left: 10px;
+}
+.M-DayName {
+    color: #695b21;
+    padding-left: 15px;
+    font-weight: 400
 }
