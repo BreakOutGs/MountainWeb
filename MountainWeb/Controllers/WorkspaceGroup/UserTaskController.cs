@@ -126,9 +126,12 @@ namespace MountainWeb.Controllers.WorkspaceGroup
             if (ModelState.IsValid)
             {
                 var user = await _userManager.GetUserAsync(HttpContext.User);
-                var userTask = await _context.UserTask.SingleAsync(e => e.Id == editModel.Id);
+                var userTask = await _context.UserTask
+                    .Include(task=>task.Reminds)
+                    .SingleAsync(e => e.Id == editModel.Id);
                 {//changing aimModel props by new values from modelview
                     userTask.Name = editModel.Name;
+                    foreach (Remind remind in userTask.Reminds) remind.TaskName = editModel.Name;
                     userTask.Priority = editModel.Priority;
                     userTask.Description = editModel.Description;
                     userTask.IsCompleted = editModel.IsCompleted;
@@ -202,7 +205,13 @@ namespace MountainWeb.Controllers.WorkspaceGroup
         public async Task<IActionResult> DeleteUserTaskConfirmed(int id)
         {
             var user = await _userManager.GetUserAsync(HttpContext.User);
-            var userTask = await _context.UserTask.FindAsync(id);
+            var userTask = await _context.UserTask
+                .Include(task => task.TaskList)
+                .ThenInclude(list => list.Aim)
+                .ThenInclude(aim => aim.Workspace)
+                .ThenInclude(w => w.Settings)
+                .SingleAsync(t=>t.Id == id);
+           
             _context.UserTask.Remove(userTask);
             _context.EventLogs.Add(new EventLog()
             {

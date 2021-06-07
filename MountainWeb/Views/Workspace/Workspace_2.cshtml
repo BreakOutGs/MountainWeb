@@ -11,8 +11,15 @@
 <script type="text/javascript" src="~/lib/jquery/dist/jquery.js"></script>
 
 <script type="text/javascript">
+    var WorkspaceId;
+    var AimChoosePanelsList;
+    var AimPanelsList;
+    var list2;
+    $(document).ready(function () {
+        WorkspaceId = document.getElementById("WorkspaceId").value;
+        AimChoosePanelsList = document.getElementsByName("AimChoosePanel");
+        AimPanelsList = document.getElementsByName("AimPanels");
 
-     $(document).ready(function () {
          $(".TaskListExpandButton").click(function () {
              console.log(this);
              var inputInside = $(this).parent("div").children("input[name='IsExpanded']");
@@ -72,30 +79,49 @@
                  $(this).parent("div").children(".Mountain-WsContMenu").addClass("Mountain-WsContActive");
 
                  var x = this.offsetLeft + 20;
-                 var y = this.offsetTop +20;
+                 var y = this.offsetTop +45;
                  $(this).parent("div").children(".Mountain-WsContMenu").css({ left: x, top: y });
          });
+        $("button[name='AimsButtons']").click(function () {
+            var AimId = $(this).parent("div").children("input")[0].value;
+            console.log(AimId);
 
-         var FirstAimPanel = document.getElementsByName("AimPanels")[0];
-         var FirstAimButtonPanel = document.getElementsByName("AimsButtons")[0];
-         FirstAimPanel.style.display = "block";
-         FirstAimButtonPanel.classList.add("M-ActivePanel");
+              $.ajax({
+                 type: "POST",
+                 url: "@Url.Action("ChangeCurrentAim","Workspace")",
+                  data: { _WorkspaceId: WorkspaceId, _AimId: AimId },
+                 dataType: "text",
+                 success: function (msg) {
+                     console.log(msg);
+                     var AimsPanelId = "AimPanel_" + AimId;
+                     AimPanelsList.forEach(aim => {
+                         aim.style.display = "none";
+                         if (aim.id == AimsPanelId) aim.style.display = "block";
+                     });
+                     AimChoosePanelsList.forEach(aim => {
+                         aim.classList.remove("M-ActivePanel");
+                         if (aim.id == AimsPanelId) aim.classList.add("M-ActivePanel");
+                     });
+                 },
+                 error: function (req, status, error) {
+                     console.log(error);
+                 }
+             });
+
+        });
+        var FirstAimButton = document.getElementsByName("AimsButtons")[0];
+        console.log(FirstAimButton);
+         var CurrentAimId = document.getElementById("CurrentAimId").value;
+        if (CurrentAimId == "0" || CurrentAimId == null || CurrentAimId == "") {
+            FirstAimButton.click();
+        }
+        else {
+            $("input[value='" + CurrentAimId + "']").parent("div").children("button")[0].click();
+        }
      });
-    function showAimsPanel(id) {
-        var list = document.getElementsByName("AimPanels");
-        var list2 = document.getElementsByName("AimsButtons");
-        var AimsPanelId = "AimPanel_" + id;
-        list.forEach(aim => {
-            aim.style.display = "none";
-            if (aim.id == AimsPanelId) aim.style.display = "block";
-        });
-        list2.forEach(aim => {
-            aim.classList.remove("M-ActivePanel");
-            if (aim.id == AimsPanelId) aim.classList.add("M-ActivePanel");
-        });
-    }
+
     function ChamgeUTaskCompleted(UTaskId) {
-       
+
         var TaskCompletedInput = document.getElementById("TaskCompleted_" + UTaskId);
         var IsTaskCompleted = TaskCompletedInput.checked;
         console.log(IsTaskCompleted);
@@ -131,8 +157,12 @@
 
 <div style="height:800px">
     <div style="width:90%">
-        <a asp-controller="Workspace" asp-action="ExitFromWorkspace"><i class="fa fa-long-arrow-alt-left"></i> Повернутись</a>
-        <span style="margin-left:25%; font-size:24px">@Model.Name</span>
+        <a class="M-LSize" asp-controller="Workspace" asp-action="ExitFromWorkspace"><i class="fa fa-long-arrow-alt-left"></i> Повернутись</a>
+        <span class="M-LSize" style="margin-left:25%; font-size:24px">
+            <input type="hidden" value="@Model.WorkspaceId" id="WorkspaceId" />
+            <span class="M-BoldLabels">Категорія:</span>
+            @Model.Name
+        </span>
     </div>
     <div class="M-PageFragment" style="width:78%;">
         <div class="M-toolbarItem">
@@ -140,15 +170,17 @@
         </div>
     </div>
     <div style="height:500px">
-        <div class="M-PageFragment" style="width:25%; height:500px">
-            <span style="margin-left:45%">Цілі</span>
+        <input type="hidden" value="@Model.Settings.CurrentAim" id="CurrentAimId"/>
+        <div class="M-PageFragment" style="width:25%; height:400px">
+            <span class="M-LSize M-BoldLabels">Виберіть ціль:</span>
             <div class="M-ListContainer" style="height:80%">
                 @foreach (var aim in @Model.Aims)
                 {
-                <div class="M-AimPanel" name="AimsButtons" id="AimPanel_@aim.Id">
-                    <button class="M-HButton" type="button" onclick="showAimsPanel(@aim.Id)">
+                <div class="M-AimPanel" id="AimPanel_@aim.Id" name="AimChoosePanel">
+                    <button class="M-HButton" type="button" name="AimsButtons">
                         <i class=" fas fa-play" style="display:block;"></i>
                     </button>
+                    <input type="hidden" value="@aim.Id" />
                     <span>@aim.Name</span>
                     <button class="M-HButton Mountain-ContextMenuButton" style="float:right; margin:5px; margin-right:10px;" type="button">
                         <i class="fas fa-ellipsis-v"></i>
@@ -170,18 +202,20 @@
                             </a>
                         </div>
                     </div>
-                  
-                 </div>   
+
+                </div>   
                  }
                 
                 </div>
             </div>
-        <div class="M-PageFragment" style="width:50%; height:500px">
+        <div class="M-PageFragment" style="width:50%; height:400px">
 
             @foreach (var aim in Model.Aims)
             {
                 <div style="height:100%; overflow-y:scroll; display:none;"  name="AimPanels" id="AimPanel_@aim.Id">
-                    <div style="width:100%; text-align:center;"> <span>@aim.Name</span></div>
+                    <div style="width:100%; text-align:center;"> 
+                    <span class="M-BoldLabels M-LSize">Ціль: </span>
+                    <span class="M-LSize">@aim.Name</span></div>
 
                     @foreach (var tasklist in aim.TaskLists)
                     {
@@ -190,7 +224,6 @@
                                 <div class="TasksProgressBar"></div>
                                 <input type="hidden" value="@tasklist.Settings.Expanded.ToString().ToLower()" name="IsExpanded" />
                                 <button class="TaskListExpandButton M-HButton" type="button" id="TaskList_@tasklist.Id">
-
                                     <i class="@Model.getExpandedIcon(tasklist.Settings.Expanded)" style="display:block;font-size:24px"></i>
                                 </button>
                                 <span class="TaskListColor"></span>

@@ -16,7 +16,7 @@
             $(this).parent("div").children(".Mountain-WsContMenu").addClass("Mountain-WsContActive");
            
             var x = this.offsetLeft + 20;
-            var y = this.offsetTop;
+            var y = this.offsetTop + 45;
             $(this).parent("div").children(".Mountain-WsContMenu").css({left: x, top:y})
         });
     });
@@ -66,7 +66,7 @@
   
     <div class="Mountain-WorkspacesToolPanel">
         <a asp-action="ShowCreateWorkspace" asp-controller="Workspace" style="font-size:larger">
-        <i class="fas fa-plus-square" style="color:black"></i>
+        <i class="fas fa-plus-square M-LSize" style="color:black"></i>
         </a>
         <div  style="margin-left: 10%;display:none;">
             <input type="text" placeholder="Введіть текст для пошуку.." style="width:300px;" />
@@ -74,12 +74,12 @@
             <button class="M-HButton" type="button"><i class="fas fa-filter"></i></button>
         </div>
         
-        <div style="float:right; margin:5px;">
-        <button class="M-HButton" style="background: #e0e1f9; height: 25px;">
+        <div style="float:right; margin:5px;" class="M-LSize">
+        <button class="M-HButton" style="background: #e0e1f9; height: 35px;">
             <i class="fas fa-list"></i>
         </button>
         |
-        <button class="M-HButton" style="height: 25px;">
+        <button class="M-HButton" style="height: 35px;">
             <i class="fas fa-th"></i>
             </button>
         </div>
@@ -92,12 +92,12 @@
             <div>
                 <div>
                     <a asp-action="ShowWorkspace" asp-controller="Workspace" asp-route-id="@workspace.Id">
-                        <i class="fas fa-list-alt" style="color:#ceaa26; margin-left:5px; margin-right:5px; font-size: 18px;"></i>
+                        <i class="fas fa-list-alt" style="color:#ceaa26; margin-right:15px; font-size: 1.5rem;"></i>
                     </a>
                 </div>
-                <div class="M-AContainer">@workspace.Aims.Count</div>
-                <div class="M-TLContainer">@Model.GetTaskListsCount(workspace)</div>
-                <div class="M-UTContainer">@Model.GetTasksCount(workspace)</div>
+                <div class="M-AContainer M-LSize">@workspace.Aims.Count</div>
+                <div class="M-TLContainer M-LSize">@Model.GetTaskListsCount(workspace)</div>
+                <div class="M-UTContainer M-LSize">@Model.GetTasksCount(workspace)</div>
             </div>
             <div class="Workspace-name">
                 @workspace.Name

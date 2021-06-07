@@ -59,7 +59,7 @@ namespace MountainWeb.Controllers.WorkspaceGroup
             _context.SaveChanges();
             return true;
         }
-
+        
 
         [HttpPost]
         public  JsonResult GetReminds()
@@ -71,6 +71,14 @@ namespace MountainWeb.Controllers.WorkspaceGroup
             var data2send = Json(l);
             return data2send;
         }
+
+        public IActionResult ShowUserTaskEditByRemind(int id)
+        {
+            var rem = _context.Reminds
+                .Single(r => r.Id == id);
+            return RedirectToAction("EditUserTask", "UserTask", new {id = rem.TaskId });
+        }
+
 
     }
 }

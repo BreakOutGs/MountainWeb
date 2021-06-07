@@ -9,9 +9,12 @@
     border-bottom: 2px solid #dfdede;
     border-radius: 6px;
     width: 600px;
-    height: 30px;
+    height: 50px;
     margin: 10px;
     padding-top: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;  
 }
 .Workspace-ListStyle > div{
     display:inline-block;
@@ -23,16 +26,20 @@
     float: right;
     margin-right: 8px;
 }
-.Workspace-name{
+.Workspace-name {
     width: 300px;
-    text-align:center;
-
+    text-align: center;
+    font-size: 24px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }
 .Mountain-WsContMenu {
     position: fixed;
     z-index: 10000;
     padding: 10px;
-    background: #c6c6c6;
+    background: #FBDF71;
+    border:1px solid;
     border-radius: 5px;
     transform: scale(0);
     transform-origin: top left;
@@ -46,9 +53,11 @@
 
 .Mountain-WsContMenu .item {
     padding: 10px;
+    background-color:#f6c500;
     font-size: 15px;
     color: #eee;
     display: block;
+    margin-bottom:5px;
 }
 .Mountain-WsContMenu .item:hover {
     background: #ffdf60;
@@ -183,10 +192,10 @@
     .M-toolbarItem > a {
         color: #dee110;
     }
-.M-toolbarItem:hover {
-    border: 3px solid #d4d4d4;
-    border-radius: 2px;
-}
+    .M-toolbarItem:hover {
+        border: 3px solid #f6c500;
+        border-radius: 2px;
+    }
 .M-ActivePanel{
     border-left:3px solid yellow;
     margin-left:12px;
@@ -198,7 +207,7 @@
     background: #FBDF71;
     padding: 10px;
     height: 400px;
-    width:300px;
+    width:350px;
     border: 2px solid #A08000;
 }
 .M-RemsTab {
@@ -223,6 +232,9 @@
     margin: 5px;
     padding: 5px;
     background: #ffdd5f;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
 }
 .M-RemName {
     overflow: hidden;
@@ -236,4 +248,8 @@
     color: #695b21;
     padding-left: 15px;
     font-weight: 400
+}
+
+.M-LSize{
+    font-size:1.5rem;
 }

@@ -42,9 +42,14 @@
     display:block;
 }
 .M-ProfileIcon {
-    width: 25px;
-    height: 25px;
+    width: 35px;
+    display:inline;
+    height: 35px;
     border-radius: 30px;
     border: 2px solid;
     background: #222222
 }
+    .M-PIActive {
+        border-color: #f6c500;
+        background: #f6c500;
+    }

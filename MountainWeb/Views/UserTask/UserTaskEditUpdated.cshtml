@@ -11,7 +11,6 @@
 <script type="text/javascript" src="~/lib/jquery/dist/jquery.js"></script>
 <script>
 
-
     var DeleteRemindButton;
     var CreateRemindButton;
     var SaveRemindButton;
@@ -21,7 +20,7 @@
     var UserTaskId;
     var RemindList;
     var RemindButtonsList;
-
+    
     var CurrentRemindId;
 
     var RemindsPanel;
@@ -59,7 +58,6 @@
         RemindList = document.getElementsByName("Remind");
         RemindsPanel = document.getElementById("RemindsPanel");
         RemindButtonsList = document.getElementsByName("RemindButton");
-
         DeleteRemindButton.disabled = true;
         SaveRemindButton.disabled = true;
 
@@ -232,7 +230,14 @@
 
         RemindsPanel.appendChild(newRemPanel);
     }
-
+    function DisplayPriority(priority) {
+        console.log(priority);
+        console.log(PriorityLabel);
+        PriorityLabel.value = priority.value;
+    }
+    function updateTextInput(val) {
+        document.getElementById('PriorityValue').innerText = val;
+    }
 </script>
 
 <form asp-action="EditUserTask" onload="init()">
@@ -246,14 +251,14 @@
         <input type="hidden" asp-for="Id" id="UserTaskId"/>
         <div class="form-group">
             <label asp-for="Name" class="control-label">Назва</label>
-            <input asp-for="Name" />
+            <input asp-for="Name" class="form-control" />
             <span asp-validation-for="Name" class="text-danger"></span>
         </div>
         <div class="form-group">
-            <label asp-for="Priority" class="control-label"></label>
+            <label asp-for="Priority" class="control-label">Пріоритет</label>
             <br />
-            <input type="range" min="0" max="100" asp-for="Priority" value="@Model.Priority" class="" onchange="display_Priority(this.value)" />
-            <span id="priority_value">@Model.Priority</span>
+            <input type="range" min="0" max="100" asp-for="Priority" value="@Model.Priority" onchange="updateTextInput(this.value);" />
+            <span id="PriorityValue">@Model.Priority</span>
             <span asp-validation-for="Priority" class="text-danger"></span>
         </div>
         <div class="form-group">

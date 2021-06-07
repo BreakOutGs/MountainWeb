@@ -196,12 +196,18 @@ namespace MountainWeb.Controllers.WorkspaceGroup
                 .ThenInclude(e => e.UserTasks)
                 .Include(aim => aim.TaskLists)
                 .ThenInclude(l => l.Settings)
+                .Include(a => a.Workspace)
+                .ThenInclude(w => w.Settings)
                 .SingleAsync(a => a.Id == id);
             _context.EventLogs.Add(new EventLog()
             {
                 Message = ("User(id: " + user.Id + ", login: " + user.UserName + ") removed Aim(id: " + aim.Id + ", name:" + aim.Name + ")"),
                 EventType = EventTypes.AimRemoved
             });
+            if(aim.Workspace.Settings.CurrentAim == aim.Id)
+            {
+                aim.Workspace.Settings.CurrentAim = 0;
+            }
             _context.AimSettings.Remove(aim.Settings);
             _context.Aim.Remove(aim);
             await _context.SaveChangesAsync();

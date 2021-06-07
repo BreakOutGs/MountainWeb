@@ -41,79 +41,9 @@ namespace MountainWeb.Controllers
                .FirstAsync();
             user.CurrentWorkspaceId = workspace.Id;
             _context.SaveChanges();
-            /*  if (SearchText!=""&&SearchText!=" " && SearchText != null)
-              {
-                  var _aims = new List<Aim>();
-                  bool _AimWithText;
-                  foreach(var aim in workspace.Aims)
-                  {
-                      _AimWithText = false;
-                      if(aim.Name.Contains(SearchText))
-                      {
-                          _AimWithText = true;
-
-                      }
-                      else
-                      {
-                          foreach(TaskList list in aim.TaskLists)
-                          {
-                              if(list.Name.Contains(SearchText))
-                              {
-                                  _AimWithText = true;
-                                  break;
-                              }
-                              else 
-                                  foreach(UserTask task in list.UserTasks)
-                                  {
-                                      if (task.Name.Contains(SearchText)) 
-                                      {
-                                          _AimWithText = true;
-                                          break;
-                                      }
-                                  }
-                          }
-                      }
-                      if (_AimWithText) _aims.Add(aim);
-                  }
-                  aims = _aims;
-              } */
+           
             viewModel = new WorkspaceViewModel(workspace);
-            if (SortBy != null && SortBy != "Без сортування" && SortBy != "Сортування")
-            {
-                switch (SortBy)
-                {
-                    case "Назва цілі":
-                        if (UpDown == "Up")
-                        {
-                            viewModel.Aims = viewModel.Aims.OrderBy(a => a.Name).ToList();
-                        }
-                        else if (UpDown == "Down")
-                        {
-                            viewModel.Aims = viewModel.Aims.OrderByDescending(a => a.Name).ToList();
-                        }
-                        break;
-                    case "Сумарний пріоритет":
-                        if (UpDown == "Up")
-                        {
-                            viewModel.Aims = viewModel.Aims.OrderBy(a => a.SummaryPriority).ToList();
-                        }
-                        else if (UpDown == "Down")
-                        {
-                            viewModel.Aims = viewModel.Aims.OrderByDescending(a => a.SummaryPriority).ToList();
-                        }
-                        break;
-                    case "Середній пріоритет":
-                        if (UpDown == "Up")
-                        {
-                            viewModel.Aims = viewModel.Aims.OrderBy(a => a.AveragePriority).ToList();
-                        }
-                        else if (UpDown == "Down")
-                        {
-                            viewModel.Aims = viewModel.Aims.OrderByDescending(a => a.AveragePriority).ToList();
-                        }
-                        break;
-                }
-            }
+         
             return View("Workspace_2", viewModel);
         }
 
@@ -252,5 +182,14 @@ namespace MountainWeb.Controllers
             _context.SaveChanges();
            return RedirectToAction("Index");
         }
+
+        [HttpPost]
+        public void ChangeCurrentAim(int _WorkspaceId, int _AimId)
+        {
+            var WorkspaceSettings = _context.WorkspaceSettings.Single(s => s.WorkspaceId == _WorkspaceId);
+            WorkspaceSettings.CurrentAim = _AimId;
+            _context.SaveChanges();
+        }
+
     }
 }

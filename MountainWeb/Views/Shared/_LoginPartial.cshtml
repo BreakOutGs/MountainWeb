@@ -16,6 +16,11 @@
     var FutureTabButton;
     var RemContVisible;
     var RemindsDataList;
+    var RemIcon;
+    var ProfileImg;
+
+    var Timer;
+
     function getRemindsData(){
         $.ajax({
             type: "Post",
@@ -23,8 +28,8 @@
             data: {},
             dataType: "json",
             success: function (msg) {
-                console.log(msg);
                 RemindsDataList = msg;
+                console.log(RemindsDataList);
                 var today = new Date();
                 var tempDayName;
                 for (var i = 0; i < RemindsDataList.length; i++) {
@@ -58,7 +63,9 @@
         RemContVisible = false;
         PastRemsTab = document.getElementById("PastReminds");
         FutureRemsTab = document.getElementById("FutureReminds");
-
+        RemIcon = document.getElementById("RemIcon");
+        ProfileImg = document.getElementById("ProfileImg");
+   
         PastTabButton = document.getElementById("PastTabButton");
         FutureTabButton = document.getElementById("FutureTabButton");
         ShowFutureRemTab();
@@ -66,16 +73,19 @@
 
             window.addEventListener("click", function () {
                 $("#ProfileMenu").removeClass("Mountain-WsContActive");
+                ProfileImg.classList.remove("M-PIActive");
             });
             $("#ProfileMenuButton").click(function (event) {
                 event.stopPropagation();
                 $(".Mountain-WsContMenu").removeClass("Mountain-WsContActive");
                 $("#ProfileMenu").addClass("Mountain-WsContActive");
+                ProfileImg.classList.add("M-PIActive");
 
                 var x = this.offsetLeft + 20;
-                var y = this.offsetTop+20;
+                var y = this.offsetTop+45;
                 $("#ProfileMenu").css({ left: x, top: y });
             });
+        Timer = setTimeout(TimerTick, 15000);
     });
     function ShowRemindsList() {
         if (!RemContVisible) {
@@ -83,10 +93,12 @@
             RemindsContainer.style.left = ShowRemindButton.style.left;
             RemindsContainer.style.top = "70px";
             RemContVisible = true;
+            RemIcon.style.color = "#f6c500";
         }
         else {
             RemindsContainer.style.display = "none";
             RemContVisible = false;
+            RemIcon.style.color = "black";
         }
 
     }
@@ -126,20 +138,42 @@
         var hours = date.getHours();
         var minutes = date.getMinutes();
         var str = getNormalizedMoH(hours) + ":" + getNormalizedMoH(minutes);
-        console.log(str);
-        RemTime.innerHTML = str;
+        
+        RemTime.innerHTML = str;                                                 
 
         var RemCheck = document.createElement("button");
         RemCheck.classList.add("M-HButton");
         RemCheck.style.display = "inline";
+        RemCheck.id = "RemCheckButton";
+        RemCheck.addEventListener("click", () => RemindDeletebyCheck(Remind.id, RemCheck), false);
+
         var CheckIcon = document.createElement("i");
         CheckIcon.classList.add("fas");
         CheckIcon.classList.add("fa-check");
+
         RemCheck.appendChild(CheckIcon);
 
+        var RemFind = document.createElement("button");
+
+      
+        RemFind.classList.add("M-HButton");
+        RemFind.style.display = "inline";
+
+        var FindLink = document.createElement("a");
+     
+        FindLink.href = "/Reminds/ShowUserTaskEditByRemind/"+Remind.id;
+
+        var FindIcon = document.createElement("i");
+        FindIcon.classList.add("fas");
+        FindIcon.classList.add("fa-search");
+
+        FindLink.appendChild(FindIcon);
+        RemFind.appendChild(FindLink);
+        
         RemindDiv.appendChild(RemTime);
         RemindDiv.appendChild(RemName);
         RemindDiv.appendChild(RemCheck);
+        RemindDiv.appendChild(RemFind);
 
         return RemindDiv;
     }
@@ -172,6 +206,55 @@
         if (diff >= 1 && diff < 2) return "Завтра";
         return getNormalizedMoH(NormalizedDate.getDate()) + "." + getNormalizedMoH(NormalizedDate.getMonth());
     }
+    function TimerTick() {
+        var TimerInterval = 15000 * 4;
+        Timer = setInterval(TimerTick, TimerInterval);
+        if (RemindsDataList == null) return;
+        
+        for (var i = 0; i < RemindsDataList.length; i++) {
+            var tRem = RemindsDataList[i];
+            var difMinutes = getDateDiffFromNowInMinutes(tRem.dateTime)
+            console.log(tRem);
+            console.log(difMinutes);
+            if (difMinutes >= -1 && difMinutes<=1) {
+                RemindAlert(tRem);
+            }
+        }
+
+       
+    }
+    function RemindAlert(Remind) {
+        alert("Нагадування про  завдання: " + Remind.taskName);
+    }
+    function getDateDiffFromNowInMinutes(date) {
+        var tempData = new Date(date);
+        var now = new Date();
+        var diff = (tempData.getTime() - now.getTime()) / (1000 * 60);
+        return diff;
+    }
+   function RemindDeletebyCheck(RemId, RemCheckButton) {
+        console.log(RemCheckButton);
+        var pdiv = RemCheckButton.parentNode;
+        $.ajax({
+            type: "Post",
+            url: "@Url.Action("DeleteRemind", "Reminds")",
+            data: { RemindId: RemId},
+            dataType: "text",
+            success: function (msg) {
+                console.log(msg + " : " + typeof (msg));
+                if (msg == "true") {
+                    console.log("deleted");
+                    console.log(pdiv);
+                    pdiv.remove();
+                }
+            },
+            error: function (rq, status, error) {
+                console.error(error);
+            }
+
+        });
+    }
+
 </script>
 
 <ul class="navbar-nav">
@@ -185,18 +268,18 @@
     {
 
         <li class="nav-item M-navbaritem">
-            <a class="nav-link text-dark" asp-area="" asp-controller="Workspace" asp-action="Index">Робоче місце</a>
+            <a class="nav-link text-dark M-LSize" asp-area="" asp-controller="Workspace" asp-action="Index">Робоче місце</a>
         </li>
-        <li>
-            <button class="M-HButton" style="margin:20px;" type="button" id="ShowRemindButton" onclick="ShowRemindsList()">
-                <i class="fas fa-bell"></i>
+        <li class="M-navbaritem">
+            <button class="M-HButton M-LSize" style="margin:15px;" type="button" id="ShowRemindButton" onclick="ShowRemindsList()">
+                <i class="fas fa-bell" id="RemIcon"></i>
             </button>
         </li>
-        <li>
+        <li class="M-navbaritem">
             <div>
-                <button class="fa-stack M-HButton Mountain-ContextMenuButton" style="color:black" id="ProfileMenuButton">
-                    <img src="~/uploads/avatar/@_context.Users.Single(u=>u.Id==UserManager.GetUserId(User)).AvatarPath" class="M-ProfileIcon" />
-                    <i class="fas fa-sort-down"></i>
+                <button class="fa-stack M-HButton Mountain-ContextMenuButton" style="color:black;width:max-content; margin-top: 10px;" id="ProfileMenuButton">
+                    <img src="~/uploads/avatar/@_context.Users.Single(u=>u.Id==UserManager.GetUserId(User)).AvatarPath" class="M-ProfileIcon" id="ProfileImg"/>
+                    <i class="fas fa-sort-down" style="display:inline;"></i>
                 </button>
                 <div class="Mountain-WsContMenu" id="ProfileMenu">
 
@@ -235,7 +318,7 @@
         <button type="button" onclick="ShowFutureRemTab()" id="FutureTabButton" class="M-RemsTab active">Очікується</button>
     </div>
     <div id="PastReminds" class="M-RemsTabContent">
-
+       
     </div>
     <div id="FutureReminds" class="M-RemsTabContent">
 

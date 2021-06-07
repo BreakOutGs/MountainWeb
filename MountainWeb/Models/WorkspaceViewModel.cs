@@ -7,12 +7,12 @@ namespace MountainWeb.Models
 
     public class WorkspaceViewModel
     {
-
+        
         public Dictionary<bool, string> listExpandedStyle { get; private set; } = new Dictionary<bool, string> { { false, "Mactivedrop" }, { true, "" } };
 
         public int WorkspaceId { get; set; }
         public string Name { get; set; }
-
+        public WorkspaceSettings Settings { get; set; }
 
         public ICollection<ShowAimViewModel> Aims { get; set; }
 
@@ -20,10 +20,11 @@ namespace MountainWeb.Models
         {
             if (workspace != null)
             {
-                WorkspaceId = workspace.Id;
+                this.WorkspaceId = workspace.Id;
                 var aims = workspace.Aims;
-                Aims = new List<ShowAimViewModel>();
-                Name = workspace.Name;
+                this.Aims = new List<ShowAimViewModel>();
+                this.Name = workspace.Name;
+                this.Settings = workspace.Settings;
                 foreach (var aim in aims)
                 {
                     Aims.Add(new ShowAimViewModel(aim));
@@ -62,5 +63,6 @@ namespace MountainWeb.Models
             }
             else return "";
         }
+       
     }
 }

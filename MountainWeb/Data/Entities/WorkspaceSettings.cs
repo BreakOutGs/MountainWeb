@@ -7,5 +7,6 @@ namespace MountainWeb.Data.Entities
         [Key]
         public int Id { get; set; }
         public int WorkspaceId { get; set; }
+        public int CurrentAim { get; set; }
     }
 }
